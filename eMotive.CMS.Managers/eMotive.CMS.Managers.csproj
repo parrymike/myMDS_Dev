@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B43AD7B5-6949-4D01-AA80-36683FFF0BB0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>eMotive.CMS.Managers</RootNamespace>
+    <AssemblyName>eMotive.CMS.Managers</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutoMapperConfiguration.cs" />
+    <Compile Include="Interfaces\IAccountManager.cs" />
+    <Compile Include="Interfaces\IApplicationManager.cs" />
+    <Compile Include="Interfaces\ICourseManager.cs" />
+    <Compile Include="Interfaces\INavigationManager.cs" />
+    <Compile Include="Interfaces\IPageManager.cs" />
+    <Compile Include="Interfaces\IRoleManager.cs" />
+    <Compile Include="Interfaces\IUserManager.cs" />
+    <Compile Include="Objects\Managers\AccountManager.cs" />
+    <Compile Include="Objects\Managers\ApplicationManager.cs" />
+    <Compile Include="Objects\Managers\CourseManager.cs" />
+    <Compile Include="Objects\Managers\NavigationManager.cs" />
+    <Compile Include="Objects\Managers\PageManager.cs" />
+    <Compile Include="Objects\Managers\RoleManager.cs" />
+    <Compile Include="Objects\Managers\UserManager.cs" />
+    <Compile Include="Objects\Search\RoleSearchDocument.cs" />
+    <Compile Include="Objects\Search\UserSearchDocument.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\eMotive.CMS.Extensions\eMotive.CMS.Extensions.csproj">
+      <Project>{b686b972-bdaa-439d-925a-1bd9e485ed64}</Project>
+      <Name>eMotive.CMS.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\eMotive.CMS.Models\eMotive.CMS.Models.csproj">
+      <Project>{FC0C5D35-8183-4E50-AB95-4512E378B8E0}</Project>
+      <Name>eMotive.CMS.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\eMotive.CMS.Repositories\eMotive.CMS.Repositories.csproj">
+      <Project>{3cf88d96-73f9-475d-9924-cb2c436925c3}</Project>
+      <Name>eMotive.CMS.Repositories</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\eMotive.CMS.Search\eMotive.CMS.Search.csproj">
+      <Project>{48B220BB-E2C2-45F1-8B2E-855859DDE61E}</Project>
+      <Name>eMotive.CMS.Search</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\eMotive.CMS.Services\eMotive.CMS.Services.csproj">
+      <Project>{ae35f974-6867-4e0a-b15c-7220ef637036}</Project>
+      <Name>eMotive.CMS.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll">
+      <Link>AutoMapper.Net4.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

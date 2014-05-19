@@ -1,0 +1,49 @@
+﻿<h1>Create Course</h1>
+
+<div class="row">
+    <div class="col-sm-offset-1 col-lg-5">
+        <table class="table table-striped table-bordered table-responsive">
+            <tr>
+                <th>Name</th>
+                <td><input type="text" ng-model="course.Name" class="form-control" /></td>
+            </tr>
+            <tr>
+                <th>Abbreviation</th>
+                <td><input type="text" ng-model="course.Abbreviation" class="form-control" /></td>
+            </tr>
+            <tr>
+                <th>BannerCode</th>
+                <td><input type="text" ng-model="course.BannerCode" class="form-control" /></td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+            </tr>
+        </table>
+
+        <table class="table table-striped table-bordered table-responsive">
+            <tr>
+                <th>Name</th>
+                <th>Abbreviation</th>
+                <th>Banner Code</th>
+                <th>Year Start Date</th>
+                <th>Course Year</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="year in course.CourseYears">
+                <td><input type="text" ng-model="year.Name" class="form-control" /></td>
+                <td><input type="text" ng-model="year.Abbreviation" class="form-control" /></td>
+                <td><input type="text" ng-model="year.BannerCode" class="form-control" /></td>
+                <td><input type="text" ng-model="year.YearStart" class="form-control" bs-datepicker readonly='true' /></td>
+                <td><input type="text" ng-model="year.Year" valid-number class="form-control" /></td>
+                <td><a href ng-click="removeCourseYear($index)" class="btn-danger btn-sm">remove</a></td>
+            </tr>
+            <tr>
+                <td colspan="6"><a href ng-click="addCourseYear()" class="btn-primary btn-sm pull-right">add year</a></td>
+            </tr>
+            <tr>
+                <td colspan="6"><a href ng-click="SaveCourse()" class="btn-primary btn-sm pull-right">Save Course</a></td>
+            </tr>
+        </table>
+        <a href="#/Home">Return Home</a>
+    </div>
+</div>

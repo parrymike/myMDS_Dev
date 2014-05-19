@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AE35F974-6867-4E0A-B15C-7220EF637036}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>eMotive.CMS.Services</RootNamespace>
+    <AssemblyName>eMotive.CMS.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper, Version=1.12.1.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Dapper.1.13\lib\net45\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="eMotive.CMS.Services, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\eMotive.CMS.Services.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.8.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MySql.Data.6.8.3\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack">
+      <HintPath>..\packages\ServiceStack.3.9.71\lib\net35\ServiceStack.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Common">
+      <HintPath>..\packages\ServiceStack.Common.3.9.11\lib\net35\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces">
+      <HintPath>..\packages\ServiceStack.Common.3.9.11\lib\net35\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.OrmLite">
+      <HintPath>..\packages\ServiceStack.OrmLite.SqlServer.3.9.14\lib\ServiceStack.OrmLite.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.OrmLite.SqlServer">
+      <HintPath>..\packages\ServiceStack.OrmLite.SqlServer.3.9.14\lib\ServiceStack.OrmLite.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis">
+      <HintPath>..\packages\ServiceStack.Redis.3.9.11\lib\net35\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.ServiceInterface">
+      <HintPath>..\packages\ServiceStack.3.9.71\lib\net35\ServiceStack.ServiceInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=4.0.15.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ServiceStack.Text.4.0.15\lib\net40\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Events\ApplicationManager\ApplicationCreatedEvent.cs" />
+    <Compile Include="Events\ApplicationManager\ApplicationDeletedEvent.cs" />
+    <Compile Include="Events\ApplicationManager\ApplicationRolledBackEvent.cs" />
+    <Compile Include="Events\ApplicationManager\ApplicationUpdatedEvent.cs" />
+    <Compile Include="Events\CourseManager\CourseDeletedEvent.cs" />
+    <Compile Include="Events\CourseManager\CourseRolledBackEvent.cs" />
+    <Compile Include="Events\CourseManager\CourseUpdatedEvent.cs" />
+    <Compile Include="Events\CourseManager\CourseCreatedEvent.cs" />
+    <Compile Include="Interfaces\IAuditable.cs" />
+    <Compile Include="Interfaces\IConfigurationService.cs" />
+    <Compile Include="Interfaces\IDocumentManagerService.cs" />
+    <Compile Include="Interfaces\IAuditService.cs" />
+    <Compile Include="Interfaces\IEmailService.cs" />
+    <Compile Include="Interfaces\IEvent.cs" />
+    <Compile Include="Interfaces\IEventAttachable.cs" />
+    <Compile Include="Interfaces\IEventManagerService.cs" />
+    <Compile Include="Interfaces\IMessageBusService.cs" />
+    <Compile Include="Objects\Audit\AuditRecord.cs" />
+    <Compile Include="Objects\DocumentManagerService\MimeType.cs" />
+    <Compile Include="Objects\DocumentManagerService\Document.cs" />
+    <Compile Include="Objects\DocumentManagerService\UploadLocation.cs" />
+    <Compile Include="Objects\EmailService\BinaryAttachment.cs" />
+    <Compile Include="Objects\EmailService\Email.cs" />
+    <Compile Include="Objects\Enums.cs" />
+    <Compile Include="Objects\EventManagerService\EventDescription.cs" />
+    <Compile Include="Objects\MessageBusService\Message.cs" />
+    <Compile Include="Objects\Search\EventSearchDocument.cs" />
+    <Compile Include="Objects\Search\EmailSearchDocument.cs" />
+    <Compile Include="Objects\Service\ConfigurationService.cs" />
+    <Compile Include="Objects\Service\DocumentManagerService.cs" />
+    <Compile Include="Objects\Service\AuditService.cs" />
+    <Compile Include="Objects\Service\EmailService.cs" />
+    <Compile Include="Objects\Service\EventManagerService.cs" />
+    <Compile Include="Objects\Service\MessageBusService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\eMotive.CMS.Extensions\eMotive.CMS.Extensions.csproj">
+      <Project>{B686B972-BDAA-439D-925A-1BD9E485ED64}</Project>
+      <Name>eMotive.CMS.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\eMotive.CMS.Models\eMotive.CMS.Models.csproj">
+      <Project>{FC0C5D35-8183-4E50-AB95-4512E378B8E0}</Project>
+      <Name>eMotive.CMS.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\eMotive.CMS.Repositories\eMotive.CMS.Repositories.csproj">
+      <Project>{3CF88D96-73F9-475D-9924-CB2C436925C3}</Project>
+      <Name>eMotive.CMS.Repositories</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\eMotive.CMS.Search\eMotive.CMS.Search.csproj">
+      <Project>{48B220BB-E2C2-45F1-8B2E-855859DDE61E}</Project>
+      <Name>eMotive.CMS.Search</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\packages\AutoMapper.3.1.1\lib\net40\AutoMapper.Net4.dll">
+      <Link>AutoMapper.Net4.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "SignalRTest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    pre {
+        outline: 1px solid #ccc;
+        padding: 5px;
+        margin: 5px;
+    }
+
+    .string {
+        color: green;
+    }
+
+    .number {
+        color: darkorange;
+    }
+
+    .boolean {
+        color: blue;
+    }
+
+    .null {
+        color: magenta;
+    }
+
+    .key {
+        color: red;
+    }
+</style>
+<div ng-app="roleAdminApp">
+    <div ng-view></div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-sanitize.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-animate.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular-route.min.js"></script>
+<script src="~/AngularJs/Services/RoleServices.js"></script>
+<script src="~/AngularJs/Apps/RoleManagement/RoleAdminApp.js"></script>

@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/SiteContent/Admin/css/stylesheets.css" rel="stylesheet" />
+</head>
+    <body>
+        @{Html.RenderAction("Menu", "Navigation", new { area = "Admin" });}
+    <div class="container">
+        @RenderBody()
+        <div class="row">
+            <div class="page-footer">
+                <div class="page-footer-wrap">
+                    <div class="side pull-left">
+                        Copyirght &COPY; YourCompany 2013. All rights reserved.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+﻿<h1>Emails</h1>
+
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-8">
+        <select class="form-control" ng-model="selectedApplication" ng-change="fetchApplicationEvents()" ng-options="application.ID as application.Name for application in applications" style="width: 200px; float: left; margin-right: 10px;" >
+            <option value="">Select an Application</option>
+        </select>
+        <select class="form-control" ng-model="selectedEvent" ng-show="selectedApplication" ng-change="fetchEventEmails()" ng-options="event as event.NiceName for event in applicationEvents" style="width: 200px;" >
+            <option value="">Select an Event</option>
+        </select>
+        
+        <h4 ng-show="selectedApplication && selectedEvent">Emails assigned to '{{selectedEvent.NiceName}}' event</h4>
+        <table class="table table-striped table-bordered table-responsive" ng-show="selectedApplication && selectedEvent">
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="email in emails">
+                <td>{{email.Subject}}</td>
+                <td><a href="#/Edit?Id={{email.ID}}&applicationId={{selectedApplication}}&eventId={{selectedEvent.ID}}" class="btn-primary btn-sm">Edit</a> <a href="#/Audit?id={{email.ID}}&applicationId={{selectedApplication}}&eventId={{selectedEvent.ID}}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-book "></span> Audit</a></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <a href="#/Create?applicationId={{selectedApplication}}&eventId={{selectedEvent.ID}}" class="btn-primary btn-sm">Create Email</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+﻿
+    <h4>Courses</h4>
+<div class="well">
+                        <form class="form-inline" role="form">
+
+                            <span ng-repeat="course in courses" style=" display:inline-block; vertical-align:top; margin-right: 15px;">
+                                <strong ng-bind="course.Name"></strong>
+                                <ul ng-repeat="year in course.CourseYears" style="list-style-type: none; padding: 0; margin: 0; ">
+                                    <li><div class="checkbox"><label><input type="checkbox" ng-model="year.checked" ng-true-value="true" ng-false-value="false" /><span ng-bind="year.Name"></span></label></div></li>
+                                </ul>
+                            </span>
+                        </form>
+                    </div>
+
+

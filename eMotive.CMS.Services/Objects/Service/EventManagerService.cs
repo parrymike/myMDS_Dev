@@ -10,7 +10,9 @@ using eMotive.CMS.Models.Objects.Event;
 using eMotive.CMS.Services.Interfaces;
 using eMotive.CMS.Services.Objects.Audit;
 using eMotive.CMS.Services.Objects.EventManagerService;
+using Lucene.Net.Search;
 using MySql.Data.MySqlClient;
+
 
 namespace eMotive.CMS.Services.Objects.Service
 {
@@ -54,9 +56,29 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                const string sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events`;";
+                    cn.Open();
+                    var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events`;";
 
-                return cn.Query<EventDescription>(sql);
+                    var events = cn.Query<EventDescription>(sql);
+
+                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `Events`;";
+
+                    var eventTags = cn.Query<EventTag>(sql);
+
+                    if (!eventTags.IsEmpty())
+                    {
+                        var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
+
+                        foreach (var ev in events)
+                        {
+                            List<EventTag> evTagList;
+
+                            if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
+                                ev.Tags = evTagList;
+                        }
+                    }
+
+                    return events;
             }
         }
 
@@ -64,9 +86,15 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                const string sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id`=@id;";
+                var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id`=@id;";
 
-                return cn.Query<EventDescription>(sql, new {id = Id}).SingleOrDefault();
+                var ev = cn.Query<EventDescription>(sql, new {id = Id}).SingleOrDefault();
+
+                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `Events` WHERE `EventID`=@EventID;";
+
+                ev.Tags = cn.Query<EventTag>(sql, new { EventID = Id });
+
+                return ev;
             }
         }
 
@@ -74,9 +102,27 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                const string sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id` IN @ids;";
+                var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id` IN @ids;";
+                var events = cn.Query<EventDescription>(sql, new {ids = Ids});
 
-                return cn.Query<EventDescription>(sql, new {ids = Ids});
+                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `Events` WHERE `EventID` IN @EventIds;";
+
+                var eventTags = cn.Query<EventTag>(sql, new { EventIds = Ids });
+
+                if (!eventTags.IsEmpty())
+                {
+                    var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
+
+                    foreach (var ev in events)
+                    {
+                        List<EventTag> evTagList;
+
+                        if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
+                            ev.Tags = evTagList;
+                    }
+                }
+
+                return events;
             }
         }
 
@@ -84,15 +130,37 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                const string sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `ApplicationId`=@applicationId;";
+                var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `ApplicationId`=@applicationId;";
 
-                return cn.Query<EventDescription>(sql, new { applicationId = applicationId });
+                var events = cn.Query<EventDescription>(sql, new { applicationId = applicationId });
+
+                if (!events.IsEmpty())
+                {
+                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `Events` WHERE `EventID` IN @EventIds;";
+
+                    var eventTags = cn.Query<EventTag>(sql, new {EventIds = events.Select(n => n.ID)});
+
+                    if (!eventTags.IsEmpty())
+                    {
+                        var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
+
+                        foreach (var ev in events)
+                        {
+                            List<EventTag> evTagList;
+
+                            if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
+                                ev.Tags = evTagList;
+                        }
+                    }
+                }
+
+                return events;
             }
         }
 
         public EventDescription New()
         {
-            return new EventDescription();
+            return new EventDescription { Tags = new EventTag[] {}};
         }
 
         internal bool eventDescriptionObjHasChanged(EventDescription oldEv, EventDescription newEv)
@@ -106,6 +174,15 @@ namespace eMotive.CMS.Services.Objects.Service
                 oldEv.NiceName != newEv.NiceName ||
                 oldEv.System != newEv.System)
                 return true;
+
+
+            
+            var oldTagsHash = new HashSet<int>(oldEv.Tags.Select(n => n.ID));
+            var newTagsHash = new HashSet<int>(newEv.Tags.Select(n => n.ID));
+
+
+            if (!oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
+                return oldTagsHash.Any(newTagsHash.Contains);
 
             return false;
         }
@@ -269,11 +346,13 @@ namespace eMotive.CMS.Services.Objects.Service
                     var success = true;
                     id = -1;
 
-                    const string sql = "INSERT INTO `Events` (`ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System`) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
+                    var sql = "INSERT INTO `Events` (`ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System`) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
                     success &= cn.Execute(sql, eventDescription) > 0;
 
                     var newId = cn.Query<ulong>("SELECT CAST(LAST_INSERT_ID() AS UNSIGNED INTEGER);").SingleOrDefault();
                     id = Convert.ToInt32(newId);
+
+                    sql = ""; //TODO: Insert event Tags here!
 
                     transaction.Complete();
 

@@ -115,6 +115,7 @@
     <Compile Include="Objects\EmailService\Email.cs" />
     <Compile Include="Objects\Enums.cs" />
     <Compile Include="Objects\EventManagerService\EventDescription.cs" />
+    <Compile Include="Objects\EventManagerService\EventTag.cs" />
     <Compile Include="Objects\MessageBusService\Message.cs" />
     <Compile Include="Objects\Search\EventSearchDocument.cs" />
     <Compile Include="Objects\Search\EmailSearchDocument.cs" />

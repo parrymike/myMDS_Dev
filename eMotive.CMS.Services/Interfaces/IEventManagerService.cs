@@ -11,7 +11,6 @@ namespace eMotive.CMS.Services.Interfaces
         void FireEvents();
 
         EventDescription Fetch(int Id);
-    //    EventDescription Fetch(string Name);
 
         IEnumerable<EventDescription> Fetch();
         IEnumerable<EventDescription> Fetch(IEnumerable<int> Ids);
@@ -27,10 +26,12 @@ namespace eMotive.CMS.Services.Interfaces
         bool Delete(int id);
         bool Put(EventDescription eventDescription);
 
-       // bool AssignToEvent<T>(Func<T, int> idField, T Object, int IdEvent) where T : class; 
+
         bool AssignToEvent(EventObject eventObject); 
         IEnumerable<int> FetchEventItems(Type Object, int idEvent);
         IEnumerable<int> FetchEventItems(Type Object, string eventName);
         IEnumerable<int> FetchEventItems(string eventName); 
+
+
     }
 }

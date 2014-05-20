@@ -190,6 +190,7 @@
     <Content Include="AngularJs\Apps\CourseManagement\Templates\Create.html" />
     <Content Include="AngularJs\Apps\CourseManagement\Templates\Edit.html" />
     <Content Include="AngularJs\Apps\CourseManagement\Templates\Home.html" />
+    <Content Include="AngularJs\Apps\EventManagement\Templates\Modals\Tags.html" />
     <Content Include="AngularJs\Apps\EventManagement\Templates\Tabs\list.html" />
     <Content Include="AngularJs\Apps\RoleManagement\RoleAdminApp.js" />
     <Content Include="AngularJs\Apps\RoleManagement\Templates\Create.html" />

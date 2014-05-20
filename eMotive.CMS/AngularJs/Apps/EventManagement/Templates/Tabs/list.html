@@ -1,6 +1,7 @@
 ﻿<h4>Events</h4>
 <table class="table table-striped table-bordered table-responsive">
     <tr>
+        <th>Tags</th>
         <th>Name</th>
         <th>Nice Name</th>
         <th>Description</th>
@@ -9,13 +10,14 @@
         <th></th>
     </tr>
     <tr ng-repeat="event in events">
+        <td><a href type="button" class="btn btn-default btn-sm" ng-click="showTagModal(event.ID)"><span class="glyphicon glyphicon-tags"></span> Tags</a></td>
         <td><input type="text" ng-model="event.Name" class="form-control" /></td>
         <td><input type="text" ng-model="event.NiceName" class="form-control" /></td>
         <td><input type="text" ng-model="event.Description" class="form-control" /></td>
         <td><div class="checkbox"><input type="checkbox" ng-model="event.System" /></div></td>
         <td><div class="checkbox"><input type="checkbox" ng-model="event.Enabled" /></div></td>
         <td><a href ng-click="removeEvent($index)" class="btn-danger btn-sm">remove</a>
-            <a href type="button" class="btn btn-default btn-sm" ng-click="showModalDialog(event.ID)"><span class="glyphicon glyphicon-book "></span> Audit</a></td>
+            <a href type="button" class="btn btn-default btn-sm" ng-click="showAuditModal(event.ID)"><span class="glyphicon glyphicon-book "></span> Audit</a></td>
     </tr>
     <tr>
         <td colspan="6"><a href ng-click="addEvent()" class="btn-primary btn-sm pull-right">add event</a></td>

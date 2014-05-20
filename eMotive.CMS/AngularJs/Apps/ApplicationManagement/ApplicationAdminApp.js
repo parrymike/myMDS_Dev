@@ -256,16 +256,29 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
     
     var auditModal = $modal({ template: "/AngularJs/Apps/AuditManagement/Templates/Modals/Audit.html", show: false, scope: $scope, backdrop: 'static' });
 
-    $scope.showModalDialog = function (eventID) {
+    $scope.showAuditModal = function (eventID) {
         $scope.EventId = eventID;
         auditModal.$promise.then(auditModal.show);
     };
 
-    $scope.hideModalDialog = function () {
+    $scope.hideAuditModal = function () {
         auditModal.$promise.then(auditModal.hide);
         $eventServices.getApplicationEvents($scope.application.ID).then(function (eventData) {
             $scope.events = eventData.Result;
         });
+    };
+
+
+
+    var tagModal = $modal({ template: "/AngularJs/Apps/EventManagement/Templates/Modals/Tags.html", show: false, scope: $scope, backdrop: 'static' });
+
+    $scope.showTagModal= function (eventID) {
+        $scope.EventId = eventID;
+        tagModal.$promise.then(tagModal.show);
+    };
+
+    $scope.hideTagModal = function () {
+        tagModal.$promise.then(tagModal.hide);
     };
 });
 
@@ -291,6 +304,28 @@ applicationAdminApp.controller("AuditController", function ($scope, $application
 });
 
 applicationAdminApp.controller("AuditModalController", function ($scope, $eventServices) {
+    $scope.showHide = {};
+
+    $eventServices.getAuditTrail($scope.EventId).then(function (data) {
+        $scope.auditList = data.Result;
+    });
+
+    $scope.rollBack = function (id) {
+        $eventServices.doRollBack($scope.auditList[id]).then(function (rollBackData) {
+
+            if (rollBackData.Success) {
+                $eventServices.getAuditTrail($scope.EventId).then(function (data) {
+                    $scope.auditList = data.Result;
+                });
+            } else {
+                alert("error!");
+            }
+        });
+    }
+
+});
+
+applicationAdminApp.controller("TagModalController", function ($scope, $eventServices) {
     $scope.showHide = {};
 
     $eventServices.getAuditTrail($scope.EventId).then(function (data) {

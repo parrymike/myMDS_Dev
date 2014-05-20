@@ -61,7 +61,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
                     var events = cn.Query<EventDescription>(sql);
 
-                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `Events`;";
+                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags`;";
 
                     var eventTags = cn.Query<EventTag>(sql);
 
@@ -90,7 +90,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
                 var ev = cn.Query<EventDescription>(sql, new {id = Id}).SingleOrDefault();
 
-                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `Events` WHERE `EventID`=@EventID;";
+                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
 
                 ev.Tags = cn.Query<EventTag>(sql, new { EventID = Id });
 
@@ -105,7 +105,7 @@ namespace eMotive.CMS.Services.Objects.Service
                 var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id` IN @ids;";
                 var events = cn.Query<EventDescription>(sql, new {ids = Ids});
 
-                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `Events` WHERE `EventID` IN @EventIds;";
+                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
 
                 var eventTags = cn.Query<EventTag>(sql, new { EventIds = Ids });
 
@@ -136,7 +136,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
                 if (!events.IsEmpty())
                 {
-                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `Events` WHERE `EventID` IN @EventIds;";
+                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
 
                     var eventTags = cn.Query<EventTag>(sql, new {EventIds = events.Select(n => n.ID)});
 

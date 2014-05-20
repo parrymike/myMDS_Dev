@@ -175,7 +175,7 @@ namespace eMotive.CMS.Services.Objects.Service
                 oldEv.System != newEv.System)
                 return true;
 
-/*
+
 
             HashSet<int> oldTagsHash = null;
             if (!oldEv.Tags.IsEmpty())
@@ -188,7 +188,14 @@ namespace eMotive.CMS.Services.Objects.Service
 
 
             if (!oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
-                return oldTagsHash.Any(newTagsHash.Contains);*/
+                return oldTagsHash.Any(newTagsHash.Contains);
+
+            if (oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
+                return true;
+
+            if (!oldTagsHash.IsEmpty() && newTagsHash.IsEmpty())
+                return true;
+           // if()
 
             return false;
         }
@@ -212,7 +219,9 @@ namespace eMotive.CMS.Services.Objects.Service
                     {//All events have been removed, so just delete all
                         sql = "DELETE FROM `Events` WHERE `ApplicationId`=@applicationId;";
                         success &= cn.Execute(sql, new {applicationId = applicationId}) > 0;
+                        sql = "DELETE FROM `EventReplacementTags` WHERE `EventID` in @EventIDs;";
 
+                        success &= cn.Execute(sql, new {EventIDs = oldAppEvents.Select(n => n.ID)}) > 0;
                         if (success)
                         {
                             foreach (var ev in oldAppEvents)
@@ -220,6 +229,7 @@ namespace eMotive.CMS.Services.Objects.Service
                                 AuditService.ObjectAuditLog(ActionType.Delete, n => n.ID, ev);
                             }
                         }
+
                     }
                     else
                     {
@@ -240,6 +250,11 @@ namespace eMotive.CMS.Services.Objects.Service
 
                                 newId = cn.Query<ulong>("SELECT CAST(LAST_INSERT_ID() AS UNSIGNED INTEGER);").SingleOrDefault();
                                 create.ID = Convert.ToInt32(newId);
+
+                                if (!create.Tags.IsEmpty())
+                                {
+                                    create.Tags = ProcessEventTags(cn, create.Tags, ref success, create.ID);
+                                }
                             }
 
                             if (success)
@@ -270,6 +285,10 @@ namespace eMotive.CMS.Services.Objects.Service
 
                                 success &= cn.Execute(sql, toDelete) > 0;
 
+                                sql = "DELETE FROM `EventReplacementTags` WHERE `EventID` in @EventIDs;";
+
+                                success &= cn.Execute(sql, new {EventIDs = toDelete.Select(n => n.ID)}) > 0;
+
                                 if (success)
                                 {
                                     foreach (var ev in toDelete)
@@ -298,6 +317,12 @@ namespace eMotive.CMS.Services.Objects.Service
 
                                     if (success)
                                     {
+
+                                        foreach (var update in updateList)
+                                        {
+                                            update.Tags = ProcessEventTags(cn, update.Tags, ref success, update.ID);
+                                        }
+
                                         foreach (var ev in updateList)
                                         {
                                             AuditService.ObjectAuditLog(ActionType.Update, n => n.ID, ev);
@@ -323,6 +348,8 @@ namespace eMotive.CMS.Services.Objects.Service
                                 {
                                     foreach (var ev in toCreateFinal)
                                     {
+                                        ev.Tags = ProcessEventTags(cn, ev.Tags, ref success, ev.ID);
+
                                         AuditService.ObjectAuditLog(ActionType.Create, n => n.ID, ev);
                                     }
                                 }
@@ -343,6 +370,8 @@ namespace eMotive.CMS.Services.Objects.Service
 
         private IEnumerable<EventTag> ProcessEventTags(IDbConnection cn, IEnumerable<EventTag> newTags, ref bool success, int eventID)
         {
+            var updatedTags = new List<EventTag>();
+
             var sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
 
             var oldTags = cn.Query<EventTag>(sql, new {EventID = eventID});
@@ -382,7 +411,7 @@ namespace eMotive.CMS.Services.Objects.Service
                     var toUpdate = newTags.Where(n => oldTags.Any(m => n.ID == m.ID));
 
                     var toCreate = newTags.Where(n => n.ID == 0);
-
+                    
                     var toCreateFinal = toCreate.Select(n =>
                     {
                         n.EventID = eventID;
@@ -414,6 +443,8 @@ namespace eMotive.CMS.Services.Objects.Service
                         sql = "UPDATE `EventReplacementTags` SET `Tag`=@tag, `Description`=@description WHERE `ID`=@id";
 
                         success &= cn.Execute(sql, toUpdate) > 0;
+
+                        updatedTags.AddRange(toUpdate);
                         //TODO: WE NEED TO CHECK IF TAG LIST HAS CHANGED INDEPENDENT FROM EVENT? HOW DO WE NOTIFIY EVENT IF EVENT IS THE SAME BUT TAGS HAVE CHANGED??
                     }
 
@@ -435,14 +466,11 @@ namespace eMotive.CMS.Services.Objects.Service
                             create.ID = Convert.ToInt32(newId);
                         }
 
-                       /* foreach (var iTags in insertNewTags)
-                        {
-                            foreach (var VARIABLE in COLLECTION)
-                            {
-                                
-                            }
-                        }*/
+
+                        updatedTags.AddRange(insertNewTags);
                     }
+
+                    return updatedTags;
                 }
             }
 

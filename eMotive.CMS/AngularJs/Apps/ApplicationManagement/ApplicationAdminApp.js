@@ -256,8 +256,8 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
     
     var auditModal = $modal({ template: "/AngularJs/Apps/AuditManagement/Templates/Modals/Audit.html", show: false, scope: $scope, backdrop: 'static' });
 
-    $scope.showAuditModal = function (eventID) {
-        $scope.EventId = eventID;
+    $scope.showAuditModal = function (index) {
+        $scope.selectedEvent = $scope.events[index];;
         auditModal.$promise.then(auditModal.show);
     };
 
@@ -266,20 +266,36 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
         $eventServices.getApplicationEvents($scope.application.ID).then(function (eventData) {
             $scope.events = eventData.Result;
         });
+        $scope.selectedEvent = null;
     };
 
 
 
     var tagModal = $modal({ template: "/AngularJs/Apps/EventManagement/Templates/Modals/Tags.html", show: false, scope: $scope, backdrop: 'static' });
 
-    $scope.showTagModal= function (eventID) {
-        $scope.EventId = eventID;
+    $scope.showTagModal = function (index) {
+        $scope.selectedEvent = $scope.events[index];
         tagModal.$promise.then(tagModal.show);
     };
 
     $scope.hideTagModal = function () {
         tagModal.$promise.then(tagModal.hide);
+        $scope.selectedEvent = null;
     };
+
+
+/*    $scope.addTag = function (eventID) {
+        $scope.events.push({
+            ID: 0,
+            EventID: eventID,
+            Tag: '',
+            Description: ''
+        });
+    };
+
+    $scope.removeTag = function (index) {
+        $scope.events.splice(index, 1);
+    };*/
 });
 
 applicationAdminApp.controller("AuditController", function ($scope, $applicationServices) {
@@ -306,7 +322,7 @@ applicationAdminApp.controller("AuditController", function ($scope, $application
 applicationAdminApp.controller("AuditModalController", function ($scope, $eventServices) {
     $scope.showHide = {};
 
-    $eventServices.getAuditTrail($scope.EventId).then(function (data) {
+    $eventServices.getAuditTrail($scope.selectedEvent.ID).then(function (data) {
         $scope.auditList = data.Result;
     });
 
@@ -314,7 +330,7 @@ applicationAdminApp.controller("AuditModalController", function ($scope, $eventS
         $eventServices.doRollBack($scope.auditList[id]).then(function (rollBackData) {
 
             if (rollBackData.Success) {
-                $eventServices.getAuditTrail($scope.EventId).then(function (data) {
+                $eventServices.getAuditTrail($scope.selectedEvent.ID).then(function (data) {
                     $scope.auditList = data.Result;
                 });
             } else {
@@ -325,25 +341,24 @@ applicationAdminApp.controller("AuditModalController", function ($scope, $eventS
 
 });
 
-applicationAdminApp.controller("TagModalController", function ($scope, $eventServices) {
-    $scope.showHide = {};
+applicationAdminApp.controller("TagModalController", function ($scope) {
 
-    $eventServices.getAuditTrail($scope.EventId).then(function (data) {
-        $scope.auditList = data.Result;
-    });
+    $scope.addTag = function (eventID) {
 
-    $scope.rollBack = function (id) {
-        $eventServices.doRollBack($scope.auditList[id]).then(function (rollBackData) {
+        if ($scope.selectedEvent.Tags == undefined)
+            $scope.selectedEvent.Tags = [];
 
-            if (rollBackData.Success) {
-                $eventServices.getAuditTrail($scope.EventId).then(function (data) {
-                    $scope.auditList = data.Result;
-                });
-            } else {
-                alert("error!");
-            }
+        $scope.selectedEvent.Tags.push({
+            ID: 0,
+            EventID: eventID,
+            Tag: '',
+            Description: ''
         });
-    }
+    };
+
+    $scope.removeTag = function (index) {
+        $scope.selectedEvent.Tags.splice(index, 1);
+    };
 
 
 });

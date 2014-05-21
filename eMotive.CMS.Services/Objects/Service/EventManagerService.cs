@@ -215,6 +215,23 @@ namespace eMotive.CMS.Services.Objects.Service
 
                     var oldAppEvents = cn.Query<EventDescription>(sql, new { applicationId = applicationId });
 
+                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
+
+                    var eventTags = cn.Query<EventTag>(sql, new { EventIds = oldAppEvents.Select(n => n.ID) });
+
+                    if (!eventTags.IsEmpty())
+                    {
+                        var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
+
+                        foreach (var ev in oldAppEvents)
+                        {
+                            List<EventTag> evTagList;
+
+                            if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
+                                ev.Tags = evTagList;
+                        }
+                    }
+
                     if (newAppEvents.IsEmpty() && !oldAppEvents.IsEmpty())
                     {//All events have been removed, so just delete all
                         sql = "DELETE FROM `Events` WHERE `ApplicationId`=@applicationId;";

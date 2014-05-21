@@ -1,0 +1,74 @@
+﻿<div class="page-header">
+    <a href ng-click="SaveCourse()" class="btn btn-app btn-primary btn-xs radius-4 pull-right" data-original-title="Default" data-rel="tooltip"><i class="ace-icon fa fa-save bigger-120"></i>Save </a>
+    <a href="#/Home" class="btn btn-app btn-xs radius-4 pull-right"><i class="ace-icon fa fa-undo bigger-120"></i>Return</a>
+
+    <h1>
+        Courses<small>
+            <i class="fa fa-angle-double-right"></i>
+            manage courses
+            <i class="fa fa-angle-double-right"></i>
+            edit
+        </small>
+    </h1>
+</div>
+
+<div class="row
+    <div class=" col-sm-offset-1 col-sm-7">
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right"> Name </label>
+            <div class="col-sm-9">
+                <input class="input-large" type="text" ng-model="course.Name" placeholder="e.g. Pharmacy" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right"> Abbreviation </label>
+            <div class="col-sm-9">
+                <input class="input-medium" type="text" ng-model="course.Abbreviation" placeholder="e.g. MBChB" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right"> Course Code </label>
+            <div class="col-sm-9">
+                <input class="input-medium" type="text" ng-model="course.BannerCode" placeholder="e.g. 7128" />
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-sm-offset-2 col-sm-8">
+        <div class="text-warning bigger-110 orange">
+            <i class="fa fa-exclamation-triangle"></i>
+            Enter rows for each year of the course.
+        </div>
+
+        <table class="table table-striped table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th>Year Name</th>
+                    <th>Abbreviation</th>
+                    <th>Academic Year Start Date</th>
+                    <th>Year of the course</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="year in course.CourseYears">
+                    <td><input type="text" ng-model="year.Name" class="form-control input-small" placeholder="e.g. Year 1" /></td>
+                    <td><input type="text" ng-model="year.Abbreviation" class="form-control input-mini" placeholder="e.g. M1" /></td>
+                    <td><input type="text" ng-model="year.YearStart" class="form-control input-small" bs-datepicker data-autoclose="1" readonly='true' /></td>
+                    <td><input type="text" ng-model="year.Year" valid-number class="form-control input-mini" placeholder="e.g. 1" /></td>
+                    <td><a href ng-click="removeCourseYear($index)" class="btn btn-xs btn-danger"><i class="fa fa-trash-o bigger-120"></i> remove </a></td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td><a href ng-click="addCourseYear()" class="btn btn-xs btn-success"><i class="fa fa-plus bigger-120"></i> add year </a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

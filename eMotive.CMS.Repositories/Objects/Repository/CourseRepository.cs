@@ -88,7 +88,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                     var success = true;
 
-
+                    //TODO: We might need to put to ID aswel, so a delete and then insert inc ID? This would be needed for rolling back a deleted course
                     var sql =
                         "UPDATE `Courses` SET `Name` = @Name, `Abbreviation` = @Abbreviation, `BannerCode` = @BannerCode WHERE `id`=@id;";
 

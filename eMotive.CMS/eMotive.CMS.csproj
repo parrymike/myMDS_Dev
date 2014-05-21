@@ -178,6 +178,11 @@
     <Content Include="AngularJs\Apps\ApplicationManagement\Templates\Tabs\roles.html" />
     <Content Include="AngularJs\Apps\ApplicationManagement\Templates\Tabs\home.html" />
     <Content Include="AngularJs\Apps\AuditManagement\Templates\Modals\Audit.html" />
+    <Content Include="AngularJs\Apps\PageManagement\PageAdminApp.js" />
+    <Content Include="AngularJs\Apps\PageManagement\Templates\Audit.html" />
+    <Content Include="AngularJs\Apps\PageManagement\Templates\Create.html" />
+    <Content Include="AngularJs\Apps\PageManagement\Templates\Edit.html" />
+    <Content Include="AngularJs\Apps\PageManagement\Templates\Home.html" />
     <Content Include="AngularJs\Apps\EmailManagement\EmailAdminApp.js" />
     <Content Include="AngularJs\Apps\EmailManagement\Templates\Audit.html" />
     <Content Include="AngularJs\Apps\EmailManagement\Templates\Create.html" />
@@ -198,6 +203,7 @@
     <Content Include="AngularJs\Apps\RoleManagement\Templates\Audit.html" />
     <Content Include="AngularJs\Apps\RoleManagement\Templates\Home.html" />
     <Content Include="AngularJs\Modules\ui.tinymce.js" />
+    <Content Include="AngularJs\Services\PageServices.js" />
     <Content Include="AngularJs\Services\ApplicationServices.js" />
     <Content Include="AngularJs\Services\EmailServices.js" />
     <Content Include="AngularJs\Services\EventServices.js" />
@@ -551,6 +557,7 @@
     <Content Include="Content\assets\images\gallery\Thumbs.db" />
     <Content Include="Content\assets\images\Thumbs.db" />
     <Content Include="Content\assets\img\Thumbs.db" />
+    <Content Include="Areas\Test\Views\web.config" />
     <None Include="Properties\PublishProfiles\Dev Server Test Site.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\angular-bootstrap-prettify.js" />
@@ -1641,6 +1648,7 @@
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\NavigationController.cs" />
     <Compile Include="Areas\Admin\Controllers\RolesController.cs" />
+    <Compile Include="Areas\Test\TestAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\NavigationController.cs" />
@@ -1706,6 +1714,7 @@
     <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_LayoutAceAdmin.cshtml" />
+    <Content Include="Views\Test\PagesTest.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1718,6 +1727,9 @@
     <Folder Include="AngularJs\Shared\Templates\" />
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Views\Shared\" />
+    <Folder Include="Areas\Test\Controllers\" />
+    <Folder Include="Areas\Test\Models\" />
+    <Folder Include="Areas\Test\Views\Shared\" />
     <Folder Include="SiteContent\Admin\assets\pluploads\" />
     <Folder Include="SiteContent\Admin\assets\uploads\.quarantine\" />
     <Folder Include="SiteContent\Admin\assets\uploads\Welcome\folder 1\" />

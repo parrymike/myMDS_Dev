@@ -62,14 +62,14 @@ namespace eMotive.CMS.IoC.Funq
                 AuditService = c.Resolve<IAuditService>()
             }).ReusedWithin(ReuseScope.Request);
 
-            container.Register<IPageManager>(c => new PageManager(/*c.Resolve<IPageRepository>()*/)
-          /*  {
+            container.Register<IPageManager>(c => new PageManager(c.Resolve<IPageRepository>())
+            {
                 EventManagerService = c.Resolve<IEventManagerService>(),
                 Mapper = c.Resolve<IMappingEngine>(),
-                SearchManager = c.Resolve<ISearchManager>(),
+                SearchManager = null,//c.Resolve<ISearchManager>(),
                 MessageBusService = c.Resolve<IMessageBusService>(),
                 AuditService = c.Resolve<IAuditService>()
-            }*/).ReusedWithin(ReuseScope.Request);
+            }).ReusedWithin(ReuseScope.Request);
             
             
             container.Register<ICourseManager>(c => new CourseManager(c.Resolve<ICourseRepository>())

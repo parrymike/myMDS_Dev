@@ -20,7 +20,9 @@ namespace eMotive.CMS.Repositories.Interfaces
         Page FetchPage(string name);
 
 
-        bool Create(Section section);
+        Section NewSection();
+
+        bool Create(Section section, out int id);
 
         bool Put(Section section);
 

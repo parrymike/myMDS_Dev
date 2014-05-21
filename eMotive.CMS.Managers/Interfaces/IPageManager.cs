@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using eMotive.CMS.Models.Objects.Pages;
+using eMotive.CMS.Search.Interfaces;
+using eMotive.CMS.Services.Interfaces;
 
 namespace eMotive.CMS.Managers.Interfaces
 {
-    public interface IPageManager
+    public interface IPageManager : ISearchable<Page>, IAuditable
     {
         Page New();
 
@@ -13,20 +15,22 @@ namespace eMotive.CMS.Managers.Interfaces
 
         bool Update(Page page);
 
-        bool Delete(Page page);
+        bool DeletePage(int id);
 
         Page FetchPage(int id);
 
         Page FetchPage(string name);
 
 
-        bool Create(Section section);
+        Section NewSection();
+
+        bool Create(Section section, out int id);
 
         bool Put(Section section);
 
         bool Update(Section section);
 
-        bool Delete(Section section);
+        bool DeleteSection(int id);
 
         Section FetchSection(int id);
 

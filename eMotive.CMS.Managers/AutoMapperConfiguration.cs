@@ -10,7 +10,7 @@ namespace eMotive.CMS.Managers
 {
     class AutoMapperConfiguration
     {
-        public enum Maps { Application, User, Course, Role }
+        public enum Maps { Application, User, Course, Role, Page }
 
         public static void Configure(params Maps[] toMap)
         {
@@ -29,6 +29,9 @@ namespace eMotive.CMS.Managers
                         break;
                     case Maps.Course:
                         ConfigureCourseMapping();
+                        break;
+                    case Maps.Page:
+                        ConfigurePageMapping();
                         break;
                 }
             }
@@ -52,6 +55,7 @@ namespace eMotive.CMS.Managers
           //  Mapper.CreateMap<Rep.User.User, User>();
           //  Mapper.CreateMap<User, Rep.User.User>();
         }
+
         private static void ConfigureCourseMapping()
         {
             Mapper.CreateMap<Rep.Courses.Course, Mod.Courses.Course>();
@@ -59,6 +63,18 @@ namespace eMotive.CMS.Managers
 
             Mapper.CreateMap<Rep.Courses.CourseYear, Mod.Courses.CourseYear>();
             Mapper.CreateMap<Mod.Courses.CourseYear, Rep.Courses.CourseYear>();
+        }
+
+        private static void ConfigurePageMapping()
+        {
+            Mapper.CreateMap<Rep.Pages.Section, Mod.Pages.Section>();
+            Mapper.CreateMap<Mod.Pages.Section, Rep.Pages.Section>();
+
+            Mapper.CreateMap<Rep.Pages.Page, Mod.Pages.Page>();
+            Mapper.CreateMap<Mod.Pages.Page, Rep.Pages.Page>();
+
+            Mapper.CreateMap<Rep.Pages.PageProjection, Mod.Pages.PageProjection>();
+            Mapper.CreateMap<Mod.Pages.PageProjection, Rep.Pages.PageProjection>();
         }
 
         private static void ConfigureRoleMapping()

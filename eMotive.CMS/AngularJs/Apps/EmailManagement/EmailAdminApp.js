@@ -124,10 +124,14 @@ emailAdminApp.controller("CreateController", function ($scope, $emailServices, $
             }
         });
     };
+
+    $scope.insertTag = function(tag) {
+        tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
+    };
 });
 
 emailAdminApp.controller("EditController", function ($scope, $emailServices, $eventServices, $applicationServices, $location) {
-    var applicationId = $location.search()["applicationId"];//TODO: can these just be vars rather than scope?????###########################
+    var applicationId = $location.search()["applicationId"];
     var eventId = $location.search()["eventId"];
     var emailId = $location.search()["Id"];
 
@@ -153,8 +157,9 @@ emailAdminApp.controller("EditController", function ($scope, $emailServices, $ev
         }
     });
 
-
-
+    $scope.insertTag = function (tag) {
+        tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
+    };
 
     $scope.saveEmail = function () {
         $emailServices.updateEmail($scope.email).then(function (data) {

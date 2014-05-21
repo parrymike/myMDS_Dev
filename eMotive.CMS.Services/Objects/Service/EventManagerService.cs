@@ -465,11 +465,11 @@ namespace eMotive.CMS.Services.Objects.Service
                         //TODO: WE NEED TO CHECK IF TAG LIST HAS CHANGED INDEPENDENT FROM EVENT? HOW DO WE NOTIFIY EVENT IF EVENT IS THE SAME BUT TAGS HAVE CHANGED??
                     }
 
-                    if (!toCreate.IsEmpty())
+                    if (!toCreateFinal.IsEmpty())
                     {
                         sql = "INSERT INTO `EventReplacementTags` (`ID`, `EventID`, `Tag`, `Description`) VALUES (@ID, @EventID, @Tag, @Description)";
 
-                        var insertNewTags = newTags.Select(n =>
+                        var insertNewTags = toCreateFinal.Select(n =>
                         {
                             n.EventID = eventID;
                             return n;

@@ -44,11 +44,13 @@
 
         <a href="#/Home?applicationId={{application.ID}}&eventId={{event.ID}}">Return Home</a>
     </div>
-    
     <div class="col-lg-2 well">
         <h4>Tags</h4>
-        <ul ng-repeat="tag in event.Tags">
-            <li ng-bind="tag.Tag"></li>
-        </ul>
+        <table class="table table-condensed">
+            <tr ng-repeat="tag in event.Tags">
+                <td><a href ng-bind="tag.Tag" ng-click="insertTag(tag.Tag)" /></td>
+                <td>{{tag.Description}}</td>
+            </tr>
+        </table>
     </div>
 </div>

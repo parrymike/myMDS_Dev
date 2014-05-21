@@ -298,7 +298,7 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
     };*/
 });
 
-applicationAdminApp.controller("AuditController", function ($scope, $applicationServices) {
+applicationAdminApp.controller("AuditController", function ($scope, $applicationServices, $location) {
 
     $scope.showHide = {};
 

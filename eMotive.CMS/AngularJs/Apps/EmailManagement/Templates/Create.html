@@ -1,6 +1,5 @@
 ﻿<h1>Create Email for '{{application.Name}}'.'{{event.NiceName}}' event</h1>
 <div class="row">
-    <form name="myForm">
         <div class="col-sm-offset-1 col-lg-5">
             <table class="table table-striped table-bordered table-responsive">
                 <tr>
@@ -48,5 +47,13 @@
 
             <a href="#/Home">Return Home</a>
         </div>
-    </form>
+    <div class="col-lg-2 well">
+        <h4>Tags</h4>
+        <table class="table table-striped table-bordered table-responsive">
+            <tr ng-repeat="tag in event.Tags"></tr>
+        </table>
+        <ul ng-repeat="tag in event.Tags">
+            <li><a href ng-bind="tag.Tag" ng-click="insertTag(tag.Tag)" /> {{tag.Description}}</li>
+        </ul>
+    </div>
 </div>

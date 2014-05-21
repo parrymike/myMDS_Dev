@@ -72,8 +72,21 @@ coursesAdminApp.controller("HomeController", function ($scope, $courseServices) 
         $courseServices.deleteCourse(item.ID).then(function (data) {
             if (data.Success) {
                 $scope.courses.splice(id, 1);
+                $.gritter.add({
+                    title: '<i class="fa fa-check"></i> Success',
+                    text: 'Course was deleted successfully',
+                    sticky: false,
+                    time: 1500,
+                    class_name: 'gritter-success'
+                });
             } else {
-                alert("error!");
+                $.gritter.add({
+                    title: '<i class="fa fa-times"></i> Error',
+                    text: data.message,
+                    sticky: false,
+                    time: 1500,
+                    class_name: 'gritter-error'
+                });
             }
         });
 
@@ -90,7 +103,13 @@ coursesAdminApp.controller("CreateController", function ($scope, $courseServices
 
             if (data.Success) {
                 $scope.course = data.Result;
-                $location.path('/Home').replace();
+                $.gritter.add({
+                    title: '<i class="fa fa-check"></i> Success',
+                    text: 'Course was created successfully',
+                    sticky: false,
+                    time: 1500,
+                    class_name: 'gritter-success'
+                });
             } else {
                 alert("error!");
               /*  $scope.message.text = data.message;
@@ -127,6 +146,13 @@ coursesAdminApp.controller("EditController", function ($scope, $courseServices, 
             $scope.course = data.Result[0];
             
         } else {
+            $.gritter.add({
+                title: '<i class="fa fa-times"></i> Error',
+                text: data.message,
+                sticky: false,
+                time: 1500,
+                class_name: 'gritter-error'
+            });
             alert("error!");
             /*  $scope.message.text = data.message;
               $scope.message.show = true;
@@ -143,7 +169,13 @@ coursesAdminApp.controller("EditController", function ($scope, $courseServices, 
 
             if (data.Success) {
                 $scope.course = data.Result;
-                $location.path('/Home').replace();
+                $.gritter.add({
+                    title: '<i class="fa fa-check"></i> Success',
+                    text: 'Course was edited successfully',
+                    sticky: false,
+                    time: 1500,
+                    class_name: 'gritter-success'
+                });
             } else {
                 alert("error!");
                 /*  $scope.message.text = data.message;

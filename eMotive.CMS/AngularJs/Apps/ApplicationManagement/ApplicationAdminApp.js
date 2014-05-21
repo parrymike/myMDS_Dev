@@ -48,8 +48,21 @@ applicationAdminApp.controller("HomeController", function ($scope, $applicationS
         $applicationServices.deleteApplication(item.ID).then(function (data) {
             if (data.Success) {
                 $scope.applications.splice(id, 1);
+                $.gritter.add({
+                    title: '<i class="fa fa-check"></i> Success',
+                    text: 'Application was deleted successfully',
+                    sticky: false,
+                    time: 1500,
+                    class_name: 'gritter-success'
+                });
             } else {
-                alert("error!");
+                $.gritter.add({
+                    title: '<i class="fa fa-times"></i> Error',
+                    text: data.message,
+                    sticky: false,
+                    time: 1500,
+                    class_name: 'gritter-error'
+                });
             }
         });
 
@@ -82,7 +95,13 @@ applicationAdminApp.controller("CreateController", function ($scope, $applicatio
 
                 $eventServices.saveApplicationEvents($scope.events, $scope.application.ID);
 
-                $location.path('/Home').replace();
+                $.gritter.add({
+                    title: '<i class="fa fa-check"></i> Success',
+                    text: 'Application was created successfully',
+                    sticky: false,
+                    time: 1500,
+                    class_name: 'gritter-success'
+                });
             } else {
                 alert(data.Errors[0]);
             }
@@ -102,7 +121,7 @@ applicationAdminApp.controller("CreateController", function ($scope, $applicatio
 
     $scope.tabs = [
           {
-              "title": "Home",
+              "title": "Application Details",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/home.html"
           },
           {
@@ -187,7 +206,13 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
                 //todo: DO SOMETHING HERE I>E IF WE DONT MOVE PAGE ON SAVE, NEED TO REFRESH EVENT LIST SO NEW IDs EXIST??
                 $eventServices.saveApplicationEvents($scope.events, $scope.application.ID);
 
-                $location.path('/Home').replace();
+                $.gritter.add({
+                    title: '<i class="fa fa-check"></i> Success',
+                    text: 'Application was saved successfully',
+                    sticky: false,
+                    time: 1500,
+                    class_name: 'gritter-success'
+                });
             } else {
                 alert(data.Errors[0]);
             }
@@ -208,7 +233,7 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
 
     $scope.tabs = [
           {
-              "title": "Home",
+              "title": "Application Details",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/home.html"
           },
           {

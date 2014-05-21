@@ -1,0 +1,53 @@
+﻿using eMotive.CMS.Managers.Interfaces;
+using eMotive.CMS.Models.Objects.Menu;
+namespace eMotive.CMS.Managers.Objects.Managers
+{
+    public class NavigationManager : INavigationManager
+    {
+        public Menu GetTestMenu()
+        {
+            var menu = new Menu
+            {
+                ID = 1,
+                Title = "TestMenu",
+                MenuItems = new[]
+                            {
+                                 new MenuItem
+                                    {
+                                        ID = 1,
+                                        Name = "Course Admin",
+                                        URL = "/portals/intrameddevtest/Test/Course/Test/Course",//"/SCE/Account/Login",/portals/intrameddevtest/Test/Course
+                                        Icon = "menu-icon fa fa-folder-o",
+<<<<<<< HEAD
+                                        Title = "Course Admin"
+=======
+                                        Title = "Manage Courses"
+>>>>>>> 372a00fa1ef29f40d7b1027e44d16ac86070f948
+                                    },
+                                    new MenuItem
+                                    {
+                                        ID = 1,
+                                        Name = "Application Admin",
+                                        URL = "/portals/intrameddevtest/Test/Course/Test/Application",//"/SCE/Account/Login",
+                                        Icon = "menu-icon fa fa-cog",
+<<<<<<< HEAD
+                                        Title = "Application Admin"
+=======
+                                        Title = "Manage Applications"
+>>>>>>> 372a00fa1ef29f40d7b1027e44d16ac86070f948
+                                    },
+                                    new MenuItem
+                                    {
+                                        ID = 1,
+                                        Name = "Email Admin",
+                                        URL = "/portals/intrameddevtest/Test/Course/Test/Emails",//"/SCE/Account/Login",
+                                        Icon = "menu-icon fa fa-bolt",
+                                        Title = "Manage Email Events"
+                                    }
+                            }
+            };
+
+            return menu;
+        }
+    }
+}

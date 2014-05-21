@@ -1,15 +1,16 @@
-﻿
-    <h4>Courses</h4>
-<div class="well">
-                        <form class="form-inline" role="form">
-
-                            <span ng-repeat="course in courses" style=" display:inline-block; vertical-align:top; margin-right: 15px;">
-                                <strong ng-bind="course.Name"></strong>
-                                <ul ng-repeat="year in course.CourseYears" style="list-style-type: none; padding: 0; margin: 0; ">
-                                    <li><div class="checkbox"><label><input type="checkbox" ng-model="year.checked" ng-true-value="true" ng-false-value="false" /><span ng-bind="year.Name"></span></label></div></li>
-                                </ul>
-                            </span>
-                        </form>
-                    </div>
-
-
+﻿<div>
+    <p>Select which year of which courses should have access to this application.</p>
+    <div ng-repeat="course in courses" role="form" style="display:inline-block; vertical-align:top; margin-right: 15px;">
+        <div class="dropdown dropdown-preview">
+            <h4 class="text-primary" ng-bind="course.Name"></h4>
+            <ul ng-repeat="year in course.CourseYears" style="list-style-type: none; padding: 0; margin: 0; ">
+                <li>
+                    <label>
+                        <input type="checkbox" class="ace ace-switch ace-switch-6" ng-model="year.checked" ng-true-value="true" ng-false-value="false" />
+                        <span class="lbl" ng-bind="' &nbsp;&nbsp;&nbsp;'+year.Name"></span>
+                    </label>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

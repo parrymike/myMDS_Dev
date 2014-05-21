@@ -1,25 +1,39 @@
-﻿<h4>Events</h4>
+﻿<p>Add events that can be used to trigger emails etc. Tags can be created for 'text replacement' when the event is fired.</p>
 <table class="table table-striped table-bordered table-responsive">
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Nice Name</th>
-        <th>Description</th>
-        <th>System</th>
-        <th>Enabled</th>
-        <th></th>
-    </tr>
-    <tr ng-repeat="event in events">
-        <td><a href type="button" class="btn btn-sm" ng-click="showTagModal($index)"><span class="glyphicon glyphicon-tags"></span> Tags [{{event.Tags.length || 0}}]</a></td>
-        <td><input type="text" ng-model="event.Name" class="form-control" /></td>
-        <td><input type="text" ng-model="event.NiceName" class="form-control" /></td>
-        <td><input type="text" ng-model="event.Description" class="form-control" /></td>
-        <td><div class="checkbox"><input type="checkbox" ng-model="event.System" /></div></td>
-        <td><div class="checkbox"><input type="checkbox" ng-model="event.Enabled" /></div></td>
-        <td><a href ng-click="removeEvent($index)" class="btn-danger btn-sm">remove</a>
-            <a href type="button" class="btn btn-default btn-sm" ng-click="showAuditModal($index)"><span class="glyphicon glyphicon-book "></span> Audit</a></td>
-    </tr>
-    <tr>
-        <td colspan="6"><a href ng-click="addEvent()" class="btn-primary btn-sm pull-right">add event</a></td>
-    </tr>
+    <thead>
+        <tr>
+            <th>Event Name</th>
+            <th>Nice Name</th>
+            <th>Description</th>
+            <th>System</th>
+            <th>Enabled</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="event in events">
+            <td><input type="text" ng-model="event.Name" class="form-control" /></td>
+            <td><input type="text" ng-model="event.NiceName" class="form-control" /></td>
+            <td><textarea ng-model="event.Description" class="form-control"></textarea></td>
+            <td>
+                <label>
+                    <input type="checkbox" class="ace ace-switch ace-switch-6" ng-model="event.System" />
+                    <span class="lbl"></span>
+                </label>
+            <td>
+                <label>
+                    <input type="checkbox" class="ace ace-switch ace-switch-6" ng-model="event.Enabled" />
+                    <span class="lbl"></span>
+                </label>
+            </td>
+            <td><a href class="btn btn-xs" ng-click="showTagModal($index)"><span class="fa fa-tags"></span> Tags [{{event.Tags.length || 0}}]</a>
+                <a href ng-click="removeEvent($index)" class="btn btn-xs btn-danger"><i class="fa fa-trash-o bigger-120"></i> remove </a>
+                <a href class="btn btn-xs btn-light" ng-click="showAuditModal($index)"><i class="fa fa-external-link bigger-120"></i> Audit </a>
+                
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5"></td><td><a href ng-click="addEvent()" class="btn btn-xs btn-success"><i class="fa fa-plus bigger-120"></i> add event </a></td>
+        </tr>
+    </tbody>
 </table>

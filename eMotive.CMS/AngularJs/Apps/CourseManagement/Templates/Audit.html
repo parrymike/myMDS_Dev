@@ -1,5 +1,5 @@
 ﻿<div class="page-header">
-    <a href="#/Home" class="btn btn-app btn-xs radius-4 pull-right"><i class="icon-undo bigger-120"></i>Return</a>
+    <a href="#/Home" class="btn btn-app btn-xs radius-4 pull-right"><i class="ace-icon fa fa-undo bigger-120"></i>Return</a>
     <br /><h1>
         Courses<small>
             <i class="ace-icon fa fa-angle-double-right"></i>
@@ -30,7 +30,6 @@
                     <th>Date</th>
                     <th>Action</th>
                     <th>Username</th>
-                    <th>Details</th>
                     <th>JSON Data</th>
                     <th></th>
                 </tr>
@@ -41,7 +40,6 @@
                     <td>{{item.Date | date:'medium'}}</td>
                     <td>{{item.Action}}</td>
                     <td>{{item.Username}}</td>
-                    <td>{{item.Details}}</td>
                     <td>
                         <input type="checkbox" ng-model="checked" />
                         <pre pretty-json json="{json: item.Object}" ng-animate="'animate'" ng-show="checked"></pre>

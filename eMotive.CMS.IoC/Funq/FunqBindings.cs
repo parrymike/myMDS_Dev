@@ -37,7 +37,6 @@ namespace eMotive.CMS.IoC.Funq
             container.Register<IConfigurationService>(c => new ConfigurationService()).ReusedWithin(ReuseScope.Request);
             container.Register<IMessageBusService>(c => new MessageBusService()).ReusedWithin(ReuseScope.Request);
             container.Register<IDocumentManagerService>(c => new DocumentManagerService(c.Resolve<IServiceRepository>())).ReusedWithin(ReuseScope.Request);
-          //  container.Register<IEventManagerService>(c => new EventManagerService(c.Resolve<IEmailService>())).ReusedWithin(ReuseScope.Request);
 
             container.Register<IEventManagerService>(c => new EventManagerService(repositoryConnectionString) { AuditService = c.Resolve<IAuditService>()}).ReusedWithin(ReuseScope.Request);
 
@@ -47,18 +46,18 @@ namespace eMotive.CMS.IoC.Funq
             {
                 AuditService = c.Resolve<IAuditService>(),
                 MessageBusService = c.Resolve<IMessageBusService>(),
-                SearchManager = c.Resolve<ISearchManager>()
+                SearchManager = null//c.Resolve<ISearchManager>(),
             }).ReusedWithin(ReuseScope.Request);
             #endregion
 
             #region managers
-            container.Register<ISearchManager>(c => new SearchManager(luceneIndex)).ReusedWithin(ReuseScope.Container);
+            //container.Register<ISearchManager>(c => new SearchManager(luceneIndex)).ReusedWithin(ReuseScope.Container);
 
             container.Register<IRoleManager>(c => new RoleManager(c.Resolve<IRoleRepository>())
             {
                 EventManagerService = c.Resolve<IEventManagerService>(),
                 Mapper = c.Resolve<IMappingEngine>(),
-                SearchManager = c.Resolve<ISearchManager>(),
+                SearchManager = null,//c.Resolve<ISearchManager>(),
                 MessageBusService = c.Resolve<IMessageBusService>(),
                 AuditService = c.Resolve<IAuditService>()
             }).ReusedWithin(ReuseScope.Request);
@@ -77,7 +76,7 @@ namespace eMotive.CMS.IoC.Funq
                         {
                             EventManagerService = c.Resolve<IEventManagerService>(),
                             Mapper = c.Resolve<IMappingEngine>(),
-                            SearchManager = c.Resolve<ISearchManager>(),
+                            SearchManager = null,//c.Resolve<ISearchManager>(),
                             MessageBusService = c.Resolve<IMessageBusService>(),
                             AuditService = c.Resolve<IAuditService>()
                         }).ReusedWithin(ReuseScope.Request);
@@ -86,7 +85,7 @@ namespace eMotive.CMS.IoC.Funq
             {
                 EventManagerService = c.Resolve<IEventManagerService>(),
                 Mapper = c.Resolve<IMappingEngine>(),
-                SearchManager = c.Resolve<ISearchManager>(),
+                SearchManager = null,//c.Resolve<ISearchManager>(),
                 MessageBusService = c.Resolve<IMessageBusService>(),
                 AuditService = c.Resolve<IAuditService>()
             }).ReusedWithin(ReuseScope.Request);

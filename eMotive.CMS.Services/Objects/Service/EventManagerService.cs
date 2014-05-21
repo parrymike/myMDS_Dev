@@ -175,14 +175,20 @@ namespace eMotive.CMS.Services.Objects.Service
                 oldEv.System != newEv.System)
                 return true;
 
+/*
 
-            
-            var oldTagsHash = new HashSet<int>(oldEv.Tags.Select(n => n.ID));
-            var newTagsHash = new HashSet<int>(newEv.Tags.Select(n => n.ID));
+            HashSet<int> oldTagsHash = null;
+            if (!oldEv.Tags.IsEmpty())
+                oldTagsHash = new HashSet<int>(oldEv.Tags.Select(n => n.ID));
+
+
+            HashSet<int> newTagsHash = null;
+            if (!newEv.Tags.IsEmpty())
+                newTagsHash = new HashSet<int>(newEv.Tags.Select(n => n.ID));
 
 
             if (!oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
-                return oldTagsHash.Any(newTagsHash.Contains);
+                return oldTagsHash.Any(newTagsHash.Contains);*/
 
             return false;
         }
@@ -203,7 +209,7 @@ namespace eMotive.CMS.Services.Objects.Service
                     var oldAppEvents = cn.Query<EventDescription>(sql, new { applicationId = applicationId });
 
                     if (newAppEvents.IsEmpty() && !oldAppEvents.IsEmpty())
-                    {
+                    {//All events have been removed, so just delete all
                         sql = "DELETE FROM `Events` WHERE `ApplicationId`=@applicationId;";
                         success &= cn.Execute(sql, new {applicationId = applicationId}) > 0;
 
@@ -218,7 +224,7 @@ namespace eMotive.CMS.Services.Objects.Service
                     else
                     {
                         if (!newAppEvents.IsEmpty() && oldAppEvents.IsEmpty())
-                        {
+                        {//All events are new, so just do a create
                             sql = "INSERT INTO `Events` (`ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System`) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
 
                             var newInsertEvents = newAppEvents.Select(n =>
@@ -245,7 +251,7 @@ namespace eMotive.CMS.Services.Objects.Service
                             }
                         }
                         else if (!newAppEvents.IsEmpty() && !oldAppEvents.IsEmpty())
-                        {
+                        {//sioome events exist, so we need to sort out what is new, what needs updating, and what should be deleted
                             var toDelete = oldAppEvents.Where(n => !newAppEvents.Any(m => n.ID == m.ID && m.ID > 0));
 
                             var toUpdate = newAppEvents.Where(n => oldAppEvents.Any(m => n.ID == m.ID));
@@ -333,6 +339,114 @@ namespace eMotive.CMS.Services.Objects.Service
                     return success;
                 }
             }
+        }
+
+        private IEnumerable<EventTag> ProcessEventTags(IDbConnection cn, IEnumerable<EventTag> newTags, ref bool success, int eventID)
+        {
+            var sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
+
+            var oldTags = cn.Query<EventTag>(sql, new {EventID = eventID});
+
+            if (newTags.IsEmpty() && !oldTags.IsEmpty())
+            {//All tags have been removed, so just delete all
+                sql = "DELETE FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
+                success &= cn.Execute(sql, new { EventID = eventID }) > 0;
+            }
+            else
+            {
+                if (!newTags.IsEmpty() && oldTags.IsEmpty())
+                {
+                    sql = "INSERT INTO `EventReplacementTags` (`ID`, `EventID`, `Tag`, `Description`) VALUES (@ID, @EventID, @Tag, @Description)";
+
+                    var insertNewTags = newTags.Select(n =>
+                    {
+                        n.EventID = eventID;
+                        return n;
+                    });
+
+                    foreach (var create in insertNewTags)
+                    {
+                        success &= cn.Execute(sql, create) > 0;
+
+                        var newId = cn.Query<ulong>("SELECT CAST(LAST_INSERT_ID() AS UNSIGNED INTEGER);").SingleOrDefault();
+                        create.ID = Convert.ToInt32(newId);
+                    }
+
+                    return insertNewTags;
+                }
+
+                if (!newTags.IsEmpty() && !oldTags.IsEmpty())
+                {
+                    var toDelete = oldTags.Where(n => !newTags.Any(m => n.ID == m.ID && m.ID > 0));
+
+                    var toUpdate = newTags.Where(n => oldTags.Any(m => n.ID == m.ID));
+
+                    var toCreate = newTags.Where(n => n.ID == 0);
+
+                    var toCreateFinal = toCreate.Select(n =>
+                    {
+                        n.EventID = eventID;
+                        return n;
+                    }).ToList();
+
+                    if (!toDelete.IsEmpty())
+                    {
+                        sql = "DELETE FROM `EventReplacementTags` WHERE `id`=@id;";
+
+                        success &= cn.Execute(sql, toDelete) > 0;
+                    }
+
+                    if (!toUpdate.IsEmpty())
+                    {
+                        /*
+                            HashSet<int> oldTagsHash = null;
+                            if (!oldEv.Tags.IsEmpty())
+                                oldTagsHash = new HashSet<int>(oldEv.Tags.Select(n => n.ID));
+
+
+                            HashSet<int> newTagsHash = null;
+                            if (!newEv.Tags.IsEmpty())
+                                newTagsHash = new HashSet<int>(newEv.Tags.Select(n => n.ID));
+
+
+                            if (!oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
+                                return oldTagsHash.Any(newTagsHash.Contains);*/
+                        sql = "UPDATE `EventReplacementTags` SET `Tag`=@tag, `Description`=@description WHERE `ID`=@id";
+
+                        success &= cn.Execute(sql, toUpdate) > 0;
+                        //TODO: WE NEED TO CHECK IF TAG LIST HAS CHANGED INDEPENDENT FROM EVENT? HOW DO WE NOTIFIY EVENT IF EVENT IS THE SAME BUT TAGS HAVE CHANGED??
+                    }
+
+                    if (!toCreate.IsEmpty())
+                    {
+                        sql = "INSERT INTO `EventReplacementTags` (`ID`, `EventID`, `Tag`, `Description`) VALUES (@ID, @EventID, @Tag, @Description)";
+
+                        var insertNewTags = newTags.Select(n =>
+                        {
+                            n.EventID = eventID;
+                            return n;
+                        });
+
+                        foreach (var create in insertNewTags)
+                        {
+                            success &= cn.Execute(sql, create) > 0;
+
+                            var newId = cn.Query<ulong>("SELECT CAST(LAST_INSERT_ID() AS UNSIGNED INTEGER);").SingleOrDefault();
+                            create.ID = Convert.ToInt32(newId);
+                        }
+
+                       /* foreach (var iTags in insertNewTags)
+                        {
+                            foreach (var VARIABLE in COLLECTION)
+                            {
+                                
+                            }
+                        }*/
+                    }
+                }
+            }
+
+            return null;
         }
 
         public bool Create(EventDescription eventDescription, out int id)

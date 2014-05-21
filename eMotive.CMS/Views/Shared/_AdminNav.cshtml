@@ -1,92 +1,66 @@
 ﻿@using eMotive.CMS.Extensions
 @using eMotive.CMS.Models.Objects.Menu
 @model Menu
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <nav class="navbar" role="navigation">
-                <div class="container-fluid">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-reorder"></span>
-        </button>
-        <a class="navbar-brand" href="#">CMS</a>
-    </div>
 
 
-    <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
+@if (Model != null && Model.MenuItems.HasContent())
+{
+    foreach (var item in Model.MenuItems)
+    {
+        var menuActive = new HashSet<string>();
 
-            @if (Model != null && Model.MenuItems.HasContent())
+        if (Request.Url != null && (Request.Url.AbsolutePath == item.URL))
+        {
+            menuActive.Add(item.URL);
+        }
+
+        if (item.MenuItems.HasContent())
+        {
+            foreach (var submenu in item.MenuItems)
             {
-                foreach (var item in Model.MenuItems)
+                if (Request.Url != null && ((Request.Url.AbsolutePath == submenu.URL)))
                 {
-                    var menuActive = new HashSet<string>();
-
-                    if (Request.Url != null && (Request.Url.AbsolutePath == item.URL))
-                    {
-                        menuActive.Add(item.URL);
-                    }
-
-                    if (item.MenuItems.HasContent())
-                    {
-                        foreach (var submenu in item.MenuItems)
-                        {
-                            if (Request.Url != null && ((Request.Url.AbsolutePath == submenu.URL)))
-                            {
-                                menuActive.Add(item.URL);
-                                menuActive.Add(submenu.URL);
-                            }
-                        }
-
-                        <li class="dropdown @{if (menuActive.Contains(item.URL)) { <text>active</text>}}">
-
-                            <a class="dropdown-toggle" title="@item.Title" href="#" data-toggle="dropdown">@Html.Raw(item.Icon) @item.Name<b class="caret"></b></a>
-
-                            <ul class="dropdown-menu">
-                                @foreach (var submenu in item.MenuItems)
-                                {
-
-                                    <li @{if (menuActive.Contains(submenu.URL)) { <text> class="active" </text>            }}>
-                                        <a title="@submenu.Title" href="@submenu.URL">@Html.Raw(submenu.Icon) @submenu.Name</a>
-                                    </li>
-                                }
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <li @{if (menuActive.Contains(item.URL)) { <text> class="active" </text>            }}>
-                            <a title="@item.Title" href="@item.URL">@Html.Raw(item.Icon) @item.Name</a>
-                        </li>
-
-                    }
+                    menuActive.Add(item.URL);
+                    menuActive.Add(submenu.URL);
                 }
-
             }
 
-        </ul>
+            <li class="dropdown @{if (menuActive.Contains(item.URL)) { <text>active</text>}}">
 
-        @if (User.Identity.IsAuthenticated)
-{
-    <ul class="nav navbar-right">
-        <li>
-            <a href="#">Logout</a>
-        </li>
-    </ul>
+                <a class="dropdown-toggle" title="@item.Title" href="#" data-toggle="dropdown">@Html.Raw(item.Icon) @item.Name<b class="caret"></b></a>
+
+                <ul class="dropdown-menu">
+                    @foreach (var submenu in item.MenuItems)
+                    {
+
+                        <li @{if (menuActive.Contains(submenu.URL)) { <text> class="active" </text>              }}>
+                            <a href="@submenu.URL">
+                                <i class="@Html.Raw(submenu.Icon)"></i>
+                                <span class="menu-text"> @submenu.Title </span>
+                            </a>
+
+                            <b class="arrow"></b>
+                        </li>
+                    }
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li @{if (menuActive.Contains(item.URL)) { <text> class="active" </text>  }}>
+                <a href="@item.URL">
+                    <i class="@Html.Raw(item.Icon)"></i>
+                    <span class="menu-text"> @item.Title </span>
+                </a>
+
+                <b class="arrow"></b>
+            </li>
+
+        }
+    }
+
 }
-        <form class="navbar-form navbar-right" role="search">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="search..." />
-            </div>
-        </form>
-    </div>
 
 
-</div>
 
-        </nav>
-    </div>
-    </div>
-</div>
+

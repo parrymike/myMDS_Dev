@@ -17,6 +17,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                         ID = 1,
                                         Name = "Course Admin",
                                         URL = "/Test/Course",//"/SCE/Account/Login",/portals/intrameddevtest/Test/Course
+                                        Icon = "menu-icon fa fa-folder-o",
                                         Title = "Course Test page"
                                     },
                                     new MenuItem
@@ -24,6 +25,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                         ID = 1,
                                         Name = "Application Admin",
                                         URL = "/Test/Application",//"/SCE/Account/Login",
+                                        Icon = "menu-icon fa fa-cog",
                                         Title = "Application Test page"
                                     },
                                     new MenuItem
@@ -31,6 +33,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                         ID = 1,
                                         Name = "Email Admin",
                                         URL = "/Test/Emails",//"/SCE/Account/Login",
+                                        Icon = "menu-icon fa fa-bolt",
                                         Title = "Email Test page"
                                     }
                             }

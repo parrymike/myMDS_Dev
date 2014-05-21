@@ -188,7 +188,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
 
             if (!oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
-                return oldTagsHash.Any(newTagsHash.Contains);
+                return !oldTagsHash.Any(newTagsHash.Contains);
 
             if (oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
                 return true;

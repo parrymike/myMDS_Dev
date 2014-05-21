@@ -30,7 +30,7 @@ namespace eMotive.CMS.Services.Events.CourseManager
                 var emails = emailService.Fetch(emailIds);
 
                 var replacements = new Dictionary<string, string>(4)
-                    {
+                    {//TODO: have old and new course in here? i.e for coursename change??
                         {"#forename#", "UnknownForename"},
                         {"#surname#", "UnknownSurname"},
                         {"#username#", "UnknownUsername"},

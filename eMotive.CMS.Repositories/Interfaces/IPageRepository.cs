@@ -24,8 +24,6 @@ namespace eMotive.CMS.Repositories.Interfaces
 
         bool Create(Section section, out int id);
 
-        bool Put(Section section);
-
         bool Update(Section section);
 
         bool Delete(Section section);
@@ -34,8 +32,12 @@ namespace eMotive.CMS.Repositories.Interfaces
 
         Section FetchSection(string name);
 
-        IEnumerable<Section> Fetch();
+        IEnumerable<Section> FetchSections();
 
-        IEnumerable<Section> Fetch(IEnumerable<int> ids);
+        IEnumerable<Section> FetchSections(IEnumerable<int> ids);
+
+        IEnumerable<Page> FetchPages();
+
+        IEnumerable<Page> FetchPages(IEnumerable<int> ids);
     }
 }

@@ -11,8 +11,6 @@ namespace eMotive.CMS.Managers.Interfaces
 
         bool Create(Page page, out int id);
 
-        bool Put(Page page);
-
         bool Update(Page page);
 
         bool DeletePage(int id);
@@ -26,8 +24,6 @@ namespace eMotive.CMS.Managers.Interfaces
 
         bool Create(Section section, out int id);
 
-        bool Put(Section section);
-
         bool Update(Section section);
 
         bool DeleteSection(int id);
@@ -36,8 +32,12 @@ namespace eMotive.CMS.Managers.Interfaces
 
         Section FetchSection(string name);
 
-        IEnumerable<Section> Fetch();
+        IEnumerable<Section> FetchSections();
 
-        IEnumerable<Section> Fetch(IEnumerable<int> ids);
+        IEnumerable<Section> FetchSections(IEnumerable<int> ids);
+
+        IEnumerable<Page> FetchPages();
+
+        IEnumerable<Page> FetchPages(IEnumerable<int> ids);
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using eMotive.CMS.Models.Objects.Users;
 using eMotive.CMS.Search.Interfaces;
-using eMotive.CMS.Search.Objects;
+using eMotive.CMS.Services.Interfaces;
 
 namespace eMotive.CMS.Managers.Interfaces
 {
-    public interface IUserManager : ISearchable<User>
+    public interface IUserManager : ISearchable<User>, IAuditable
     {
         User New();
         User Fetch(int id);
@@ -19,9 +19,8 @@ namespace eMotive.CMS.Managers.Interfaces
         IEnumerable<User> Fetch(IEnumerable<string> usernames);
 
         bool Create(User user, out int id);//todo: why not widen message bus to spit out created objects etc?? Would save having horrid out ints from Rep through to site / api
-        bool Create(User user, IEnumerable<int> groupIds);
         bool Update(User user);
-        bool Delete(User user);
+        bool Delete(int id);
 
      //   IEnumerable<User> FetchRecordsFromSearch(SearchResult searchResult);
     }

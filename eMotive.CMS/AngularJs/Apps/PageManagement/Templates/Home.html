@@ -7,9 +7,8 @@
     </h1>
 </div>
 
-
 <div class="row">
-    <div class="col-sm-offset-2 col-sm-8">
+    <div class="col-sm-offset-2 col-sm-4">
 
 
         <form class="form-search">
@@ -22,19 +21,19 @@
                                 <i class="ace-icon fa fa-search nav-search-icon"></i>
                             </div>
                             <div>
-                                <a href="#/Create" class="btn btn-xs btn-success"><i class="ace-icon fa fa-plus bigger-120"></i> Create </a>
+                                <a href="#/CreateSection" class="btn btn-xs btn-success"><i class="ace-icon fa fa-plus bigger-120"></i> Create Section</a>
                             </div>
                         </td>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="section in Sections | filter:search">
+                    <tr ng-repeat="section in sections | filter:search">
                         <td>
-                            {{section.Name}}
-                            <span class="col-md-5 pull-right">
-                                <a href="#/Edit?id={{section.ID}}" class="btn btn-xs btn-info"><i class="fa fa-edit bigger-120"></i> Edit </a>
+                            {{section.Name}} [{{section.Pages.length || 0}} Pages]
+                            <span class="col-md-6 pull-right">
+                                <a href="#/Pages?id={{section.ID}}" class="btn btn-xs btn-primary"><i class="fa fa-edit bigger-120"></i> Pages </a>
+                                <a href="#/EditSection?id={{section.ID}}" class="btn btn-xs btn-info"><i class="fa fa-edit bigger-120"></i> Edit </a>
                                 <a href="#" ng-click="delete($index)" class="btn btn-xs btn-danger"><i class="fa fa-trash-o bigger-120"></i> Delete </a>
-                                <a href="#/Audit?id={{section.ID}}" class="btn btn-xs btn-light"><i class="fa fa-external-link bigger-120"></i> Audit </a>
                             </span>
                         </td>
                     </tr>

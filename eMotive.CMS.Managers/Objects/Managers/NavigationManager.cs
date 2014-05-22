@@ -12,14 +12,14 @@ namespace eMotive.CMS.Managers.Objects.Managers
                 Title = "TestMenu",
                 MenuItems = new[]
                             {
-                                 new MenuItem
+                                /* new MenuItem
                                     {
                                         ID = 1,
                                         Name = "Course Admin",
                                         URL = "/Test/Course",//"/SCE/Account/Login",/portals/intrameddevtest/Test/Course
                                         Icon = "menu-icon fa fa-folder-o",
                                         Title = "Course Admin"
-                                    },
+                                    },*/
                                     new MenuItem
                                     {
                                         ID = 1,
@@ -31,10 +31,18 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                     new MenuItem
                                     {
                                         ID = 1,
+                                        Name = "Page Admin",
+                                        URL = "/Test/Pages",//"/SCE/Account/Login",
+                                        Icon = "menu-icon fa fa-file",
+                                        Title = "Page page"
+                                    },
+                                    new MenuItem
+                                    {
+                                        ID = 1,
                                         Name = "Email Admin",
                                         URL = "/Test/Emails",//"/SCE/Account/Login",
-                                        Icon = "menu-icon fa fa-bolt",
-                                        Title = "Email Test page"
+                                        Icon = "menu-icon fa fa-envelope",
+                                        Title = "Email page"
                                     }
                             }
             };

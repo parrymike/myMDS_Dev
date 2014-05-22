@@ -2,7 +2,6 @@
 using System.Linq;
 using eMotive.CMS.Extensions;
 using eMotive.CMS.Managers.Interfaces;
-using eMotive.CMS.Models.Objects.Courses;
 using eMotive.CMS.Models.Objects.Json;
 using eMotive.CMS.Models.Objects.Pages;
 using eMotive.CMS.Models.Objects.Roles;
@@ -16,6 +15,11 @@ namespace eMotive.Api.Services.Pages
     //TODO: reverse this, so /sections/pages rather than /pages/sections ??
     [Route("/Pages/Sections/New", "GET")]
     public class NewSection
+    {
+    }
+
+    [Route("/Pages/New", "GET")]
+    public class NewPage
     {
     }
 
@@ -60,6 +64,19 @@ namespace eMotive.Api.Services.Pages
         public Section Section { get; set; }
     }
 
+    [Route("/Pages", "POST")]
+    [Route("/Pages", "PUT")]
+    public class SavePage
+    {
+        public Page Page { get; set; }
+    }
+
+    [Route("/Pages", "DELETE")]
+    public class DeletePage
+    {
+        public int Id { get; set; }
+    }
+
     [Route("/Pages/Search", "POST")]
     public class DoSearch
     {
@@ -91,6 +108,17 @@ namespace eMotive.Api.Services.Pages
 
         }
 
+        public object Get(NewPage request)
+        {
+            return new ServiceResult<Page>
+            {
+                Success = true,
+                Result = _pageManager.New(),
+                Errors = new string[] { }
+            };
+
+        }
+
         public object Post(RollBack request)
         {
             var success = _pageManager.RollBack(request.record);
@@ -108,7 +136,7 @@ namespace eMotive.Api.Services.Pages
 
         public object Get(GetAudit request)
         {
-            var result = _auditService.FetchLog<Section>(request.Id);
+            var result = _auditService.FetchLog<Page>(request.Id);
 
             var success = result.HasContent();
 
@@ -150,8 +178,8 @@ namespace eMotive.Api.Services.Pages
         public object Get(GetSections request)
         {
             var result = request.Ids.IsEmpty()
-                ? _pageManager.Fetch()
-                : _pageManager.Fetch(request.Ids);
+                ? _pageManager.FetchSections()
+                : _pageManager.FetchSections(request.Ids);
 
             var success = !result.IsEmpty();
 
@@ -214,5 +242,74 @@ namespace eMotive.Api.Services.Pages
                 Errors = issues
             };
         }
+
+        public object Get(GetPages request)
+        {
+            var result = request.Ids.IsEmpty()
+                ? _pageManager.FetchPages()
+                : _pageManager.FetchPages(request.Ids);
+
+            var success = !result.IsEmpty();
+
+            var issues = _messageBusService.Fetch().Select(m => m.Details); //TODO: how to deal with errors when going directly into the api?? perhaps organise messages better?
+
+            return new ServiceResult<IEnumerable<Page>>
+            {
+                Success = success,
+                Result = result,
+                Errors = issues
+            };
+
+        }
+
+        public object Post(SavePage request)
+        {
+            int id;
+            var success = _pageManager.Create(request.Page, out id);
+
+            if (success)
+                request.Page.ID = id;
+
+            var issues = _messageBusService.Fetch().Select(m => m.Details); ;
+
+            return new ServiceResult<Page>
+            {
+                Success = success,
+                Result = request.Page,
+                Errors = issues
+            };
+        }
+
+        public object Put(SavePage request)
+        {
+            var success = _pageManager.Update(request.Page);
+
+            var issues = _messageBusService.Fetch().Select(m => m.Details); ;
+
+            return new ServiceResult<Page>
+            {
+                Success = success,
+                Result = request.Page,
+                Errors = issues
+            };
+        }
+
+        public object Delete(DeletePage request)
+        {
+            var success = _pageManager.DeletePage(request.Id);
+
+            var issues = _messageBusService.Fetch().Select(m => m.Details); ;
+
+            //    if (success)
+            //   request.Course = null;
+
+            return new ServiceResult<bool>
+            {
+                Success = success,
+                Result = success,
+                Errors = issues
+            };
+        }
+
     }
 }

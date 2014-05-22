@@ -177,14 +177,19 @@ namespace eMotive.CMS.Services.Objects.Service
 
 
 
-            HashSet<int> oldTagsHash = null;
+            if (!newEv.Tags.IsEmpty() && newEv.Tags.Any(n => n.ID == 0))
+                return true;
+
+
+            //TODO: This logic needs some work, it needs to first look for new, and return true, or look for the same ids then compare fields of objects with the same id
+            HashSet<string> oldTagsHash = null;
             if (!oldEv.Tags.IsEmpty())
-                oldTagsHash = new HashSet<int>(oldEv.Tags.Select(n => n.ID));
+                oldTagsHash = new HashSet<string>(oldEv.Tags.Select(n => n.Tag));
 
 
-            HashSet<int> newTagsHash = null;
+            HashSet<string> newTagsHash = null;
             if (!newEv.Tags.IsEmpty())
-                newTagsHash = new HashSet<int>(newEv.Tags.Select(n => n.ID));
+                newTagsHash = new HashSet<string>(newEv.Tags.Select(n => n.Tag));
 
 
             if (!oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
@@ -215,20 +220,24 @@ namespace eMotive.CMS.Services.Objects.Service
 
                     var oldAppEvents = cn.Query<EventDescription>(sql, new { applicationId = applicationId });
 
-                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
-
-                    var eventTags = cn.Query<EventTag>(sql, new { EventIds = oldAppEvents.Select(n => n.ID) });
-
-                    if (!eventTags.IsEmpty())
+                    if (!oldAppEvents.IsEmpty())
                     {
-                        var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
+                        sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
 
-                        foreach (var ev in oldAppEvents)
+                        var eventTags = cn.Query<EventTag>(sql, new {EventIds = oldAppEvents.Select(n => n.ID)});
+
+                        if (!eventTags.IsEmpty())
                         {
-                            List<EventTag> evTagList;
+                            var eventTagsDict = eventTags.GroupBy(n => n.EventID)
+                                .ToDictionary(k => k.Key, v => v.ToList());
 
-                            if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
-                                ev.Tags = evTagList;
+                            foreach (var ev in oldAppEvents)
+                            {
+                                List<EventTag> evTagList;
+
+                                if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
+                                    ev.Tags = evTagList;
+                            }
                         }
                     }
 

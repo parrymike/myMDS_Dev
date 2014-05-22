@@ -15,7 +15,7 @@ namespace eMotive.CMS
 {
     public class AppHost : AppHostBase
     {
-        public AppHost() : base("Intramed Web Services", typeof(eMotive.Api.Services.Roles.RolesService).Assembly) { }
+        public AppHost() : base("Intramed Web Services", typeof(Api.Services.Events.NewEvent).Assembly) { }
 
         public override void Configure(Container container)
         {

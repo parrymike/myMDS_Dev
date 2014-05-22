@@ -1,4 +1,4 @@
-﻿angular.module('applicationServices', []).factory('$applicationServices', function ($http) {
+﻿angular.module('pageServices', []).factory('$pageServices', function ($http) {
     return {//https://github.com/mgonto/restangular <== look into this?
         getAllSections: function () {
             return $http.get("/api/Pages/Sections").then(function (result) {
@@ -11,7 +11,7 @@
             });
         },
         newSection: function () {
-            return $http.get("/api/Pages/New").then(function (result) {
+            return $http.get("/api/Pages/Sections/New").then(function (result) {
                 return result.data;
             });
         },
@@ -31,6 +31,34 @@
                 return result.data;
             });
         },
+
+        getPages: function (ids) {
+            return $http.get("/api/Pages", { params: { Ids: ids } }).then(function (result) {
+                return result.data;
+            });
+        },
+        newPage: function () {
+            return $http.get("/api/Pages/New").then(function (result) {
+                return result.data;
+            });
+        },
+
+        createPage: function (data) {
+            return $http.post("/api/Pages", { Page: data }).then(function (result) {
+                return result.data;
+            });
+        },
+        updatePage: function (data) {
+            return $http.put("/api/Pages", { Page: data }).then(function (result) {
+                return result.data;
+            });
+        },
+        deletePage: function (id) {
+
+            return $http.delete("/api/Pages", { params: { Id: id } }).then(function (result) {
+                return result.data;
+            });
+        },
         getAuditTrail: function (id) {
             return $http.get("/api/Pages/Audit", { params: { Id: id } }).then(function (result) {
                 return result.data;
@@ -42,7 +70,7 @@
             });
         },
         doSearch: function (search) {
-            return $http.post("/api/Pages/Search", { ApplicationSearch: search }).then(function (result) {
+            return $http.post("/api/Pages/Search", { PageSearch: search }).then(function (result) {
                 return result.data;
             });
         }

@@ -50,7 +50,7 @@ applicationAdminApp.controller("HomeController", function ($scope, $applicationS
                 $scope.applications.splice(id, 1);
                 $.gritter.add({
                     title: '<i class="fa fa-check"></i> Success',
-                    text: 'Application was deleted successfully',
+                    text: "The application '" + item.Name + "' was deleted successfully",
                     sticky: false,
                     time: 1500,
                     class_name: 'gritter-success'
@@ -124,10 +124,10 @@ applicationAdminApp.controller("CreateController", function ($scope, $applicatio
               "title": "Application Details",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/home.html"
           },
-          {
+          /*{
               "title": "Course Access",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/courses.html"
-          },
+          },*/
           {
               "title": "Role Access",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/roles.html"
@@ -236,10 +236,10 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
               "title": "Application Details",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/home.html"
           },
-          {
+         /* {
               "title": "Course Access",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/courses.html"
-          },
+          },*/
           {
               "title": "Role Access",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/roles.html"
@@ -265,6 +265,7 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
 
 
     $scope.addEvent = function () {
+
         $scope.events.push({
             ID: 0,
             Name: '',
@@ -369,7 +370,7 @@ applicationAdminApp.controller("AuditModalController", function ($scope, $eventS
 applicationAdminApp.controller("TagModalController", function ($scope) {
 
     $scope.addTag = function (eventID) {
-
+    
         if ($scope.selectedEvent.Tags == undefined)
             $scope.selectedEvent.Tags = [];
 

@@ -27,7 +27,7 @@
 
             <li class="dropdown @{if (menuActive.Contains(item.URL)) { <text>active</text>}}">
 
-                <a class="dropdown-toggle" title="@item.Title" href="#" data-toggle="dropdown">@Html.Raw(item.Icon) @item.Name<b class="caret"></b></a>
+                <a class="dropdown-toggle" title="@item.Name" href="#" data-toggle="dropdown"><i class="@Html.Raw(item.Icon)"></i> @item.Name<b class="caret"></b></a>
 
                 <ul class="dropdown-menu">
                     @foreach (var submenu in item.MenuItems)
@@ -36,7 +36,7 @@
                         <li @{if (menuActive.Contains(submenu.URL)) { <text> class="active" </text>              }}>
                             <a href="@submenu.URL">
                                 <i class="@Html.Raw(submenu.Icon)"></i>
-                                <span class="menu-text"> @submenu.Title </span>
+                                <span class="menu-text"> @submenu.Name </span>
                             </a>
 
                             <b class="arrow"></b>
@@ -50,7 +50,7 @@
             <li @{if (menuActive.Contains(item.URL)) { <text> class="active" </text>  }}>
                 <a href="@item.URL">
                     <i class="@Html.Raw(item.Icon)"></i>
-                    <span class="menu-text"> @item.Title </span>
+                    <span class="menu-text"> @item.Name </span>
                 </a>
 
                 <b class="arrow"></b>

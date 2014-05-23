@@ -1,0 +1,54 @@
+﻿<div class="page-header">
+    <a href="#/Pages?id={{section.ID}}" class="btn btn-app btn-xs radius-4 pull-right"><i class="icon-undo bigger-120"></i>Return</a>
+    <br /><h1>
+              Pages<small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+            audit trail
+        </small>
+    </h1>
+</div>
+<style>
+    input[type=checkbox] {
+        -webkit-appearance: none;
+        width: 3em;
+        height: 1em;
+    }
+
+        input[type=checkbox]:after {
+            content: 'show▹';
+        }
+
+    input.open[type=checkbox]:after {
+        content: 'hide▿';
+    }
+</style>
+<div class="row">
+    <div class="col-sm-offset-1 col-sm-8">
+        <table class="table table-striped table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Action</th>
+                    <th>Username</th>
+                    <th>Details</th>
+                    <th>JSON Data</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}"-->
+                <tr ng-class="{info: $first}" ng-repeat="item in auditList">
+                    <td>{{item.Date | date:'medium'}}</td>
+                    <td>{{item.Action}}</td>
+                    <td>{{item.Username}}</td>
+                    <td>{{item.Details}}</td>
+                    <td>
+                        <input type="checkbox" ng-model="checked" />
+                        <pre pretty-json json="{json: item.Object}" ng-animate="'animate'" ng-show="checked"></pre>
+                    </td>
+                    <td><a ng-show="!$first" href class="btn btn-xs btn-warning" ng-click="rollBack($index)"><i class="icon-refresh bigger-120"></i> rollback </a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

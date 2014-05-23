@@ -99,6 +99,10 @@
     <Compile Include="Events\CourseManager\CourseRolledBackEvent.cs" />
     <Compile Include="Events\CourseManager\CourseUpdatedEvent.cs" />
     <Compile Include="Events\CourseManager\CourseCreatedEvent.cs" />
+    <Compile Include="Events\UserManager\UserCreatedEvent.cs" />
+    <Compile Include="Events\UserManager\UserDeletedEvent.cs" />
+    <Compile Include="Events\UserManager\UserRolledBackEvent.cs" />
+    <Compile Include="Events\UserManager\UserUpdatedEvent.cs" />
     <Compile Include="Interfaces\IAuditable.cs" />
     <Compile Include="Interfaces\IConfigurationService.cs" />
     <Compile Include="Interfaces\IDocumentManagerService.cs" />

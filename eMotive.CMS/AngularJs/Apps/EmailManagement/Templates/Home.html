@@ -1,5 +1,11 @@
-﻿<h1>Emails</h1>
-
+﻿<div class="page-header">
+    <h1>
+        Emails<small>
+            <i class="fa fa-angle-double-right"></i>
+            manage emails
+        </small>
+    </h1>
+</div>
 <div class="row">
     <div class="col-sm-offset-1 col-sm-8">
         <select class="form-control" ng-model="selectedApplication" ng-change="fetchApplicationEvents()" ng-options="application.ID as application.Name for application in applications" style="width: 200px; float: left; margin-right: 10px;" >
@@ -19,7 +25,10 @@
             <tr ng-repeat="email in emails">
                 <td>{{email.Priority}}</td>
                 <td>{{email.Subject}}</td>
-                <td><a href="#/Edit?Id={{email.ID}}&applicationId={{selectedApplication}}&eventId={{selectedEvent.ID}}" class="btn-primary btn-sm">Edit</a> <a href="#/Audit?id={{email.ID}}&applicationId={{selectedApplication}}&eventId={{selectedEvent.ID}}" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-book "></span> Audit</a></td>
+                <td><a href="#/Edit?Id={{email.ID}}&applicationId={{selectedApplication}}&eventId={{selectedEvent.ID}}" class="btn btn-xs btn-info"><i class="fa fa-edit bigger-120"></i> Edit </a>
+                    <a href ng-click="delete($index)" class="btn btn-xs btn-danger"><i class="fa fa-trash-o bigger-120"></i> Delete </a>
+                    <a href="#/Audit?id={{email.ID}}&applicationId={{selectedApplication}}&eventId={{selectedEvent.ID}}" class="btn btn-xs btn-light"><i class="fa fa-external-link bigger-120"></i> Audit </a>
+                </td>
             </tr>
             <tr>
                 <td colspan="3">

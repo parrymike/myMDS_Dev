@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using eMotive.CMS.Extensions;
-using eMotive.CMS.Models.Objects.Courses;
+using eMotive.CMS.Models.Objects.Users;
 using eMotive.CMS.Services.Interfaces;
 using eMotive.CMS.Services.Objects.EmailService;
 using ServiceStack.WebHost.Endpoints;
 
-namespace eMotive.CMS.Services.Events.CourseManager
+namespace eMotive.CMS.Services.Events.UserManager
 {
-    public class CourseUpdatedEvent : IEvent
+    public class UserUpdatedEvent : IEvent
     {
-        private readonly Course _course;
+        private readonly User _user;
 
-        public CourseUpdatedEvent(Course course)
+        public UserUpdatedEvent(User user)
         {
-            _course = course;
+            _user = user;
         }
 
         public void Fire()
@@ -23,7 +23,7 @@ namespace eMotive.CMS.Services.Events.CourseManager
             var emailService = AppHostBase.Instance.TryResolve<IEmailService>();
 
 
-            var emailIds = eventManagerService.FetchEventItems(typeof(Email), "CourseUpdatedEvent");
+            var emailIds = eventManagerService.FetchEventItems(typeof(Email), "UserUpdatedEvent");
 
             if (!emailIds.IsEmpty())
             {
@@ -31,11 +31,11 @@ namespace eMotive.CMS.Services.Events.CourseManager
 
                 var replacements = new Dictionary<string, string>(4)
                     {//TODO: have old and new course in here? i.e for coursename change??
-                        {"#forename#", "UnknownForename"},
+                     /*   {"#forename#", "UnknownForename"},
                         {"#surname#", "UnknownSurname"},
                         {"#username#", "UnknownUsername"},
                         {"#coursename#", _course.Name},
-                        {"#courseabbreviation#", _course.Abbreviation}
+                        {"#courseabbreviation#", _course.Abbreviation}*/
                     };
 
                 var sbSubject = new StringBuilder();

@@ -5,6 +5,7 @@ using eMotive.CMS.Managers.Interfaces;
 using eMotive.CMS.Models.Objects.Courses;
 using eMotive.CMS.Models.Objects.Json;
 using eMotive.CMS.Models.Objects.Roles;
+using eMotive.CMS.Models.Objects.Users;
 using eMotive.CMS.Services.Interfaces;
 using eMotive.CMS.Services.Objects.Audit;
 using ServiceStack.ServiceHost;
@@ -13,81 +14,81 @@ using ServiceStack.ServiceInterface;
 namespace eMotive.Api.Services.Users
 {
 
-    [Route("/Courses/New", "GET")]
-    public class NewCourse
+    [Route("/Users/New", "GET")]
+    public class NewUser
     {
     }
 
-    [Route("/Courses/Audit", "GET")]
+    [Route("/Users/Audit", "GET")]
     public class GetAudit
     {
         public int Id { get; set; }
 
     }
 
-    [Route("/Courses/Audit/RollBack", "POST")]
+    [Route("/Users/Audit/RollBack", "POST")]
     public class RollBack
     {
         public AuditRecord record { get; set; }
     }
 
 
-    [Route("/Courses")]
-    [Route("/Courses/{Ids}")]
-    public class GetCourses
+    [Route("/Users")]
+    [Route("/Users/{Ids}")]
+    public class GetUsers
     {
         public int[] Ids { get; set; }
     }
 
 
-    [Route("/Courses", "DELETE")]
-    public class DeleteCourse
+    [Route("/Users", "DELETE")]
+    public class DeleteUser
     {
         public int Id { get; set; }
     }
 
-    [Route("/Courses", "POST")]
-    [Route("/Courses", "PUT")]
+    [Route("/Users", "POST")]
+    [Route("/Users", "PUT")]
    
-    public class SaveCourse
+    public class SaveUser
     {
-        public Course Course { get; set; }
+        public User User { get; set; }
     }
 
-    [Route("/Courses/Search", "POST")]
+    [Route("/Users/Search", "POST")]
     public class DoSearch
     {
         public RoleSearch RoleSearch { get; set; }
     }
 
     //http://stackoverflow.com/questions/15231537/recommended-servicestack-api-structure/15235822#15235822
-    public class CourseService : Service
+    public class UserService : Service
     {
-        private readonly ICourseManager _courseManager;
+        private readonly IUserManager _userManager;
         private readonly IMessageBusService _messageBusService;
         private readonly IAuditService _auditService;
 
-        public CourseService(ICourseManager courseManager, IMessageBusService messageBusService, IAuditService auditService)
+        public UserService(IUserManager userManager, IMessageBusService messageBusService, IAuditService auditService)
         {
-            _courseManager = courseManager;
+            _userManager = userManager;
             _messageBusService = messageBusService;
             _auditService = auditService;
         }
 
-        public object Get(NewCourse request)
+        public object Get(NewUser request)
         {
-            return new ServiceResult<Course>
+            return new ServiceResult<User>
             {
                 Success = true,
-                Result = _courseManager.New(),
+                Result = _userManager.New(),
                 Errors = new string[] { }
             };
 
         }
-
+        
         public object Post(RollBack request)
         {
-            var success = _courseManager.RollBack(request.record);
+            var success = _userManager.RollBack(request.record);
 
             var issues = _messageBusService.Fetch().Select(m => m.Details); //TODO: how to deal with errors when going directly into the api?? perhaps organise messages better?
 
@@ -102,7 +103,7 @@ namespace eMotive.Api.Services.Users
 
         public object Get(GetAudit request)
         {
-            var result = _auditService.FetchLog<Course>(request.Id);
+            var result = _auditService.FetchLog<User>(request.Id);
 
             var success = result.HasContent();
 
@@ -141,17 +142,17 @@ namespace eMotive.Api.Services.Users
 
         }*/
 
-        public object Get(GetCourses request)
+        public object Get(GetUsers request)
         {
             var result = request.Ids.IsEmpty()
-                ? _courseManager.Fetch()
-                : _courseManager.Fetch(request.Ids);
+                ? _userManager.FetchAll()
+                : _userManager.Fetch(request.Ids);
 
             var success = !result.IsEmpty();
 
             var issues = _messageBusService.Fetch().Select(m => m.Details); //TODO: how to deal with errors when going directly into the api?? perhaps organise messages better?
 
-            return new ServiceResult<IEnumerable<Course>>
+            return new ServiceResult<IEnumerable<User>>
             {
                 Success = success,
                 Result = result,
@@ -160,46 +161,43 @@ namespace eMotive.Api.Services.Users
 
         }
 
-        public object Post(SaveCourse request)
+        public object Post(SaveUser request)
         {
             int id;
-            var success = _courseManager.Create(request.Course, out id);
+            var success = _userManager.Create(request.User, out id);
 
             if (success)
-                request.Course.ID = id;
+                request.User.ID = id;
 
             var issues = _messageBusService.Fetch().Select(m => m.Details); ;
 
-            return new ServiceResult<Course>
+            return new ServiceResult<User>
             {
                 Success = success,
-                Result = request.Course,
+                Result = request.User,
                 Errors = issues
             };
         }
 
-        public object Put(SaveCourse request)
+        public object Put(SaveUser request)
         {
-            var success = _courseManager.Update(request.Course);
+            var success = _userManager.Update(request.User);
 
             var issues = _messageBusService.Fetch().Select(m => m.Details); ;
 
-            return new ServiceResult<Course>
+            return new ServiceResult<User>
             {
                 Success = success,
-                Result = request.Course,
+                Result = request.User,
                 Errors = issues
             };
         }
 
-        public object Delete(DeleteCourse request)
+        public object Delete(DeleteUser request)
         {
-            var success = _courseManager.Delete(request.Id);
+            var success = _userManager.Delete(request.Id);
 
-            var issues = _messageBusService.Fetch().Select(m => m.Details); ;
-
-        //    if (success)
-             //   request.Course = null;
+            var issues = _messageBusService.Fetch().Select(m => m.Details);
 
             return new ServiceResult<bool>
             {
@@ -209,11 +207,4 @@ namespace eMotive.Api.Services.Users
             };
         }
     }
-
-   /* public class RolesResponse<T>
-    {
-        public bool Success;
-        public IEnumerable<T> Result { get; set; }
-        public ResponseStatus ResponseStatus { get; set; } //Where Exceptions get auto-serialized
-    }*/
 }

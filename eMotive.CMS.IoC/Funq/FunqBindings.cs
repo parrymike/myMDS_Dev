@@ -26,7 +26,7 @@ namespace eMotive.CMS.IoC.Funq
 
             #region repositories
             container.Register<IPageRepository>(c => new PageRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
-            container.Register<IRoleRepository>(c => new RoleRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
+         //   container.Register<IRoleRepository>(c => new RoleRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
             container.Register<IUserRepository>(c => new UserRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
             container.Register<ICourseRepository>(c => new CourseRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
             container.Register<IApplicationRepository>(c => new ApplicationRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
@@ -53,7 +53,16 @@ namespace eMotive.CMS.IoC.Funq
             #region managers
             //container.Register<ISearchManager>(c => new SearchManager(luceneIndex)).ReusedWithin(ReuseScope.Container);
 
-            container.Register<IRoleManager>(c => new RoleManager(c.Resolve<IRoleRepository>())
+          /*  container.Register<IRoleManager>(c => new RoleManager(c.Resolve<IRoleRepository>())
+            {
+                EventManagerService = c.Resolve<IEventManagerService>(),
+                Mapper = c.Resolve<IMappingEngine>(),
+                SearchManager = null,//c.Resolve<ISearchManager>(),
+                MessageBusService = c.Resolve<IMessageBusService>(),
+                AuditService = c.Resolve<IAuditService>()
+            }).ReusedWithin(ReuseScope.Request);*/
+
+            container.Register<IPageManager>(c => new PageManager(c.Resolve<IPageRepository>())
             {
                 EventManagerService = c.Resolve<IEventManagerService>(),
                 Mapper = c.Resolve<IMappingEngine>(),
@@ -61,15 +70,6 @@ namespace eMotive.CMS.IoC.Funq
                 MessageBusService = c.Resolve<IMessageBusService>(),
                 AuditService = c.Resolve<IAuditService>()
             }).ReusedWithin(ReuseScope.Request);
-
-            container.Register<IPageManager>(c => new PageManager(/*c.Resolve<IPageRepository>()*/)
-          /*  {
-                EventManagerService = c.Resolve<IEventManagerService>(),
-                Mapper = c.Resolve<IMappingEngine>(),
-                SearchManager = c.Resolve<ISearchManager>(),
-                MessageBusService = c.Resolve<IMessageBusService>(),
-                AuditService = c.Resolve<IAuditService>()
-            }*/).ReusedWithin(ReuseScope.Request);
             
             
             container.Register<ICourseManager>(c => new CourseManager(c.Resolve<ICourseRepository>())

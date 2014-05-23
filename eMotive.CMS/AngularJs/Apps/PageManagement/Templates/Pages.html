@@ -1,0 +1,45 @@
+﻿<a href="#/Home" class="btn btn-app btn-xs radius-4 pull-right"><i class="ace-icon fa fa-undo bigger-120"></i>Return</a>
+<div class="page-header">
+    <h1>
+        Pages<small>
+            <i class="fa fa-angle-double-right"></i>
+            manage pages
+            <i class="fa fa-angle-double-right"></i>
+            pages
+        </small>
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-sm-offset-2 col-sm-4">
+        <h4>Pages belonging to '{{section.Name}}' section</h4>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <td>
+                        <div class="input-icon pull-right">
+                            <input class="nav-search-input" id="nav-search-input" type="text" placeholder="Search ..." autocomplete="off" ng-model="search">
+                            <i class="ace-icon fa fa-search nav-search-icon"></i>
+                        </div>
+                        <div>
+                            <a href="#/CreatePage?section={{section.ID}}" class="btn btn-xs btn-success"><i class="ace-icon fa fa-plus bigger-120"></i> Create Page</a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="page in section.Pages | filter:search">
+                    <td>
+                        {{page.Name}}
+                        <span class="col-md-6 pull-right">
+                            <a href="#/EditPage?section={{section.ID}}&page={{page.ID}}" class="btn btn-xs btn-info"><i class="fa fa-edit bigger-120"></i> Edit </a>
+                            <a href="#" ng-click="delete($index)" class="btn btn-xs btn-danger"><i class="fa fa-trash-o bigger-120"></i> Delete </a>
+                            <a href="#/Audit?id={{page.ID}}&Section={{section.ID}}" class="btn btn-xs btn-light"><i class="fa fa-external-link bigger-120"></i> Audit </a>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</div>

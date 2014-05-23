@@ -13,13 +13,13 @@ namespace eMotive.CMS.Controllers
    // [Route("{action}")]
     public class TestController : ServiceStackController
     {
-        private readonly IRoleManager _roleManager;
+      //  private readonly IRoleManager _roleManager;
         private readonly IEmailService _emailService;
         private readonly IMessageBusService _messageBusService;
       //  private readonly ILog _log;
-        public TestController(IRoleManager roleManager, IMessageBusService messageBusService, IEmailService emailService)//, ILog log)
+        public TestController(/*IRoleManager roleManager,*/ IMessageBusService messageBusService, IEmailService emailService)//, ILog log)
         {
-            _roleManager = roleManager;
+         //   _roleManager = roleManager;
             _messageBusService = messageBusService;
             _emailService = emailService;
            // _log = LogManager.GetLogger(GetType());
@@ -31,7 +31,7 @@ namespace eMotive.CMS.Controllers
         }
 
         //[ActionName("CourseTest")]
-        [Route("~/")]
+        
         [Route("Course")]
         public ActionResult CourseTest()
         {
@@ -39,6 +39,7 @@ namespace eMotive.CMS.Controllers
         }
 
         [Route]
+        [Route("~/")]
         [Route("Application")]
         public ActionResult ApplicationTest()
         {
@@ -47,6 +48,12 @@ namespace eMotive.CMS.Controllers
 
         [Route("Emails")]
         public ActionResult EmailsTest()
+        {
+            return View();
+        }
+
+        [Route("Pages")]
+        public ActionResult PagesTest()
         {
             return View();
         }

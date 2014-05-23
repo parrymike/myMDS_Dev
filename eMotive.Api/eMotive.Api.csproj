@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationServices.cs" />
+    <Compile Include="PageServices.cs" />
     <Compile Include="UserServices.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="EventService.cs" />

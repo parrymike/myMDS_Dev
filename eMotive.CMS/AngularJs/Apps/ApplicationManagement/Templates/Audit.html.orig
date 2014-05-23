@@ -1,20 +1,29 @@
 ﻿<a href="#/Home" class="btn btn-app btn-xs radius-4 pull-right"><i class="ace-icon fa fa-undo bigger-120"></i>Return</a>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 57ae49f87f52a4e63e625ec7118098ee23e4f038
 <div class="page-header">
     <h1>
-        Emails<small>
+        Applications<small>
             <i class="fa fa-angle-double-right"></i>
-            manage emails
+            manage applications
             <i class="fa fa-angle-double-right"></i>
             audit
         </small>
     </h1>
+<<<<<<< HEAD
+
+    <h2>{{application.Name}}</h2>
+</div>
+=======
 </div>
 <style>
     /*http://jsfiddle.net/azD5m/104/*/
-    /*
+/*
     .stuff-to-show {
         position: relative;
-
+     
         -webkit-transition: top linear .5s;
         transition: top linear .5s;
         top: 0;
@@ -22,7 +31,7 @@
 
         .stuff-to-show.ng-hide {
            /* top: -100px;*/
-    /*}
+        /*}
 
         .stuff-to-show.ng-hide-add,
         .stuff-to-show.ng-hide-remove {
@@ -62,7 +71,9 @@
 
 
 
+>>>>>>> 57ae49f87f52a4e63e625ec7118098ee23e4f038
 
+<style>
     input[type=checkbox] {
         -webkit-appearance: none;
         width: 3em;
@@ -80,27 +91,31 @@
 <div class="row">
     <div class="col-sm-offset-1 col-sm-3">
         <table class="table table-striped table-bordered table-responsive">
-            <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Action</th>
-                <th>Username</th>
-                <th>Details</th>
-                <th></th>
-                <th></th>
-            </tr><!--ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}"-->
-            <tr ng-class="{info: $first}" ng-repeat="item in auditList">
-                <td>{{item.ID}}</td>
-                <td>{{item.Date | date:'medium'}}</td>
-                <td>{{item.Action}}</td>
-                <td>{{item.Username}}</td>
-                <td>{{item.Details}}</td>
-                <td>
-                    <input type="checkbox" ng-model="checked" />
-                    <pre pretty-json json="{json: item.Object}" ng-animate="'animate'" ng-show="checked"></pre>
-                </td>
-                <td><a ng-show="!$first" href class="btn btn-warning btn-sm" ng-click="rollBack($index)">RollBack</a></td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                    <th>Username</th>
+                    <th>Details</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead><!--ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}"-->
+            <tbody>
+                <tr ng-class="{info: $first}" ng-repeat="item in auditList">
+                    <td>{{item.ID}}</td>
+                    <td>{{item.Date | date:'medium'}}</td>
+                    <td>{{item.Action}}</td>
+                    <td>{{item.Username}}</td>
+                    <td>{{item.Details}}</td>
+                    <td>
+                        <input type="checkbox" ng-model="checked" />
+                        <pre pretty-json json="{json: item.Object}" ng-animate="'animate'" ng-show="checked"></pre>
+                    </td>
+                    <td><a ng-show="!$first" href class="btn btn-warning btn-sm" ng-click="rollBack($index)">RollBack</a></td>
+                </tr>
+            </tbody>
         </table>
         <a href="#/Home">Return Home</a>
     </div>

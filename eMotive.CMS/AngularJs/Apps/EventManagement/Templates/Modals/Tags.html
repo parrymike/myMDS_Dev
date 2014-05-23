@@ -21,12 +21,12 @@
                         <tr ng-repeat="item in selectedEvent.Tags">
                             <td><input type="text" ng-model="item.Tag" /></td>
                             <td><input type="text" ng-model="item.Description" /></td>
-                            <td><a href class="btn btn-xs btn-danger"><i class="fa fa-trash-o bigger-120" ng-click="removeTag($index)"></i> remove </a></td>
+                            <td><a href class="btn btn-xs btn-danger" ng-click="removeTag($index)"><i class="fa fa-trash-o bigger-120"></i> remove </a></td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>
                             <td>
-                                <a href class="btn btn-xs btn-success"><i class="fa fa-plus bigger-120" ng-click="addTag(selectedEvent.ID)"></i> add event </a>
+                                <a href class="btn btn-xs btn-success" ng-click="addTag(selectedEvent.ID)"><i class="fa fa-plus bigger-120" ></i> add event </a>
                             </td>
                         </tr>
                     </tbody>

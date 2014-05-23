@@ -46,7 +46,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
         public void FireEvents()
         {
-            foreach (var e in Events ?? new IEvent[] {})
+            foreach (var e in Events ?? new IEvent[] { })
             {
                 e.Fire();
             }
@@ -56,29 +56,29 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                    cn.Open();
-                    var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events`;";
+                cn.Open();
+                var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events`;";
 
-                    var events = cn.Query<EventDescription>(sql);
+                var events = cn.Query<EventDescription>(sql);
 
-                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags`;";
+                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags`;";
 
-                    var eventTags = cn.Query<EventTag>(sql);
+                var eventTags = cn.Query<EventTag>(sql);
 
-                    if (!eventTags.IsEmpty())
+                if (!eventTags.IsEmpty())
+                {
+                    var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
+
+                    foreach (var ev in events)
                     {
-                        var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
+                        List<EventTag> evTagList;
 
-                        foreach (var ev in events)
-                        {
-                            List<EventTag> evTagList;
-
-                            if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
-                                ev.Tags = evTagList;
-                        }
+                        if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
+                            ev.Tags = evTagList;
                     }
+                }
 
-                    return events;
+                return events;
             }
         }
 
@@ -88,7 +88,7 @@ namespace eMotive.CMS.Services.Objects.Service
             {
                 var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id`=@id;";
 
-                var ev = cn.Query<EventDescription>(sql, new {id = Id}).SingleOrDefault();
+                var ev = cn.Query<EventDescription>(sql, new { id = Id }).SingleOrDefault();
 
                 sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
 
@@ -103,7 +103,7 @@ namespace eMotive.CMS.Services.Objects.Service
             using (var cn = Connection)
             {
                 var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id` IN @ids;";
-                var events = cn.Query<EventDescription>(sql, new {ids = Ids});
+                var events = cn.Query<EventDescription>(sql, new { ids = Ids });
 
                 sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
 
@@ -138,7 +138,7 @@ namespace eMotive.CMS.Services.Objects.Service
                 {
                     sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
 
-                    var eventTags = cn.Query<EventTag>(sql, new {EventIds = events.Select(n => n.ID)});
+                    var eventTags = cn.Query<EventTag>(sql, new { EventIds = events.Select(n => n.ID) });
 
                     if (!eventTags.IsEmpty())
                     {
@@ -160,7 +160,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
         public EventDescription New()
         {
-            return new EventDescription { Tags = new EventTag[] {}};
+            return new EventDescription { Tags = new EventTag[] { } };
         }
 
         internal bool eventDescriptionObjHasChanged(EventDescription oldEv, EventDescription newEv)
@@ -195,7 +195,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
             if (!oldTagsHash.IsEmpty() && newTagsHash.IsEmpty())
                 return true;
-           // if()
+            // if()
 
             return false;
         }
@@ -215,30 +215,30 @@ namespace eMotive.CMS.Services.Objects.Service
 
                     var oldAppEvents = cn.Query<EventDescription>(sql, new { applicationId = applicationId });
 
-                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
-
-                    var eventTags = cn.Query<EventTag>(sql, new { EventIds = oldAppEvents.Select(n => n.ID) });
-
-                    if (!eventTags.IsEmpty())
+                    if (!oldAppEvents.IsEmpty())
                     {
-                        var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
-
-                        foreach (var ev in oldAppEvents)
+                        sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
+                        var eventTags = cn.Query<EventTag>(sql, new { EventIds = oldAppEvents.Select(n => n.ID) });
+                        if (!eventTags.IsEmpty())
                         {
-                            List<EventTag> evTagList;
-
-                            if (eventTagsDict.TryGetValue(ev.ID, out evTagList))
-                                ev.Tags = evTagList;
+                            var eventTagsDict = eventTags.GroupBy(n => n.EventID).ToDictionary(k => k.Key, v => v.ToList());
+                            foreach (var ev in oldAppEvents)
+                            {
+                                List<EventTag> evTagList;
+                                if (eventTagsDict.TryGetValue(ev.ID, out evTagList)) ev.Tags = evTagList;
+                            }
                         }
                     }
+
+                    
 
                     if (newAppEvents.IsEmpty() && !oldAppEvents.IsEmpty())
                     {//All events have been removed, so just delete all
                         sql = "DELETE FROM `Events` WHERE `ApplicationId`=@applicationId;";
-                        success &= cn.Execute(sql, new {applicationId = applicationId}) > 0;
+                        success &= cn.Execute(sql, new { applicationId = applicationId }) > 0;
                         sql = "DELETE FROM `EventReplacementTags` WHERE `EventID` in @EventIDs;";
 
-                        success &= cn.Execute(sql, new {EventIDs = oldAppEvents.Select(n => n.ID)}) > 0;
+                        success &= cn.Execute(sql, new { EventIDs = oldAppEvents.Select(n => n.ID) }) > 0;
                         if (success)
                         {
                             foreach (var ev in oldAppEvents)
@@ -304,7 +304,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
                                 sql = "DELETE FROM `EventReplacementTags` WHERE `EventID` in @EventIDs;";
 
-                                success &= cn.Execute(sql, new {EventIDs = toDelete.Select(n => n.ID)}) > 0;
+                                success &= cn.Execute(sql, new { EventIDs = toDelete.Select(n => n.ID) }) > 0;
 
                                 if (success)
                                 {
@@ -391,7 +391,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
             var sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
 
-            var oldTags = cn.Query<EventTag>(sql, new {EventID = eventID});
+            var oldTags = cn.Query<EventTag>(sql, new { EventID = eventID });
 
             if (newTags.IsEmpty() && !oldTags.IsEmpty())
             {//All tags have been removed, so just delete all
@@ -428,7 +428,7 @@ namespace eMotive.CMS.Services.Objects.Service
                     var toUpdate = newTags.Where(n => oldTags.Any(m => n.ID == m.ID));
 
                     var toCreate = newTags.Where(n => n.ID == 0);
-                    
+
                     var toCreateFinal = toCreate.Select(n =>
                     {
                         n.EventID = eventID;
@@ -527,7 +527,7 @@ namespace eMotive.CMS.Services.Objects.Service
             {
                 const string sql = "UPDATE `Events` SET `ApplicationId`=@ApplicationId, `Name`=@Name, `NiceName`=@NiceName, `Description`=@Description, `Enabled`=@Enabled, `System`=@System WHERE `ID`=@id;";
 
-                return cn.Execute(sql, new { ApplicationId = eventDescription.ApplicationId, Name = eventDescription.Name, NiceName = eventDescription.NiceName, Description=eventDescription.Description, Enabled=eventDescription.Enabled, System=eventDescription.System, id = eventDescription.ID }) > 0;
+                return cn.Execute(sql, new { ApplicationId = eventDescription.ApplicationId, Name = eventDescription.Name, NiceName = eventDescription.NiceName, Description = eventDescription.Description, Enabled = eventDescription.Enabled, System = eventDescription.System, id = eventDescription.ID }) > 0;
             }
         }
 
@@ -564,7 +564,7 @@ namespace eMotive.CMS.Services.Objects.Service
                 }
             }
         }
-         
+
         public bool AssignToEvent<T>(Func<T, int> idField, T Object, int IdEvent) where T : class
         {
             using (var cn = Connection)
@@ -591,7 +591,7 @@ namespace eMotive.CMS.Services.Objects.Service
             {
                 const string sql = "SELECT `ObjectID` FROM `ObjectAssignedToEvent` WHERE `Type`=@type AND `EventID`=@EventID;";
 
-                return cn.Query<int>(sql, new {Type = objectType.ToString(), EventID = idEvent});
+                return cn.Query<int>(sql, new { Type = objectType.ToString(), EventID = idEvent });
             }
         }
 
@@ -618,7 +618,7 @@ namespace eMotive.CMS.Services.Objects.Service
             if (success)
             {
                 AuditService.ObjectAuditLog(ActionType.RollBack, n => n.ID, rollBackApplication, record);
-            //    EventManagerService.QueueEvent(new ApplicationRolledBackEvent(rollBackApplication));
+                //    EventManagerService.QueueEvent(new ApplicationRolledBackEvent(rollBackApplication));
             }
 
             return success;

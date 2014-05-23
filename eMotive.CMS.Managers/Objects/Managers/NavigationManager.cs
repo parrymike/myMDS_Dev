@@ -12,11 +12,11 @@ namespace eMotive.CMS.Managers.Objects.Managers
                 Title = "TestMenu",
                 MenuItems = new[]
                             {
-                                 new MenuItem
+                                new MenuItem
                                     {
                                         ID = 1,
                                         Name = "Course Admin",
-                                        URL = "/portals/intrameddevtest/Test/Course/Test/Course",//"/SCE/Account/Login",/portals/intrameddevtest/Test/Course
+                                        URL = "/Test/Course",
                                         Icon = "menu-icon fa fa-folder-o",
                                         Title = "Manage Courses"
                                     },
@@ -24,7 +24,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                     {
                                         ID = 1,
                                         Name = "Application Admin",
-                                        URL = "/portals/intrameddevtest/Test/Course/Test/Application",//"/SCE/Account/Login",
+                                        URL = "/Test/Application",
                                         Icon = "menu-icon fa fa-cog",
                                         Title = "Manage Applications"
                                     },
@@ -32,10 +32,36 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                     {
                                         ID = 1,
                                         Name = "Email Admin",
-                                        URL = "/portals/intrameddevtest/Test/Course/Test/Emails",//"/SCE/Account/Login",
+                                        URL = "/Test/Emails",
                                         Icon = "menu-icon fa fa-bolt",
                                         Title = "Manage Email Events"
                                     }
+                                /*
+                                new MenuItem
+                                    {
+                                        ID = 1,
+                                        Name = "Course Admin",
+                                        URL = "/portals/intrameddevtest/Test/Course",
+                                        Icon = "menu-icon fa fa-folder-o",
+                                        Title = "Manage Courses"
+                                    },
+                                    new MenuItem
+                                    {
+                                        ID = 1,
+                                        Name = "Application Admin",
+                                        URL = "/portals/intrameddevtest/Test/Application",
+                                        Icon = "menu-icon fa fa-cog",
+                                        Title = "Manage Applications"
+                                    },
+                                    new MenuItem
+                                    {
+                                        ID = 1,
+                                        Name = "Email Admin",
+                                        URL = "/portals/intrameddevtest/Test/Emails",
+                                        Icon = "menu-icon fa fa-bolt",
+                                        Title = "Manage Email Events"
+                                    }
+                                 */
                             }
             };
 

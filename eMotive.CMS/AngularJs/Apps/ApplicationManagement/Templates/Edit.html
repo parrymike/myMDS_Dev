@@ -13,26 +13,7 @@
 
     <h2>{{application.Name}} Application</h2>
 </div>
-<style>
-    /* some elements used in demo only */
-    .spinner-preview {
-        width: 100px;
-        height: 100px;
-        text-align: center;
-        margin-top: 60px;
-    }
 
-    .dropdown-preview {
-        margin: 0 5px;
-        display: inline-block;
-    }
-
-        .dropdown-preview > .dropdown-menu {
-            display: block;
-            position: static;
-            margin-bottom: 5px;
-        }
-</style>
 <div class="row">
     <div class="col-sm-offset-1 col-lg-9">
         <div ng-model="tabs.activeTab" bs-tabs="tabs" ng-change="populateEvents(tabs[tabs.activeTab].title)">

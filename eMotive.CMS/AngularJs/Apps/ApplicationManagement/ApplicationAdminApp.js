@@ -323,12 +323,18 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
     };*/
 });
 
-applicationAdminApp.controller("AuditController", function ($scope, $applicationServices) {
+applicationAdminApp.controller("AuditController", function ($scope, $applicationServices, $location) {
 
     $scope.showHide = {};
 
+    
+
     $applicationServices.getAuditTrail($location.search()["id"]).then(function (data) {
         $scope.auditList = data.Result;
+    });
+
+    $applicationServices.getApplications($location.search()["id"]).then(function (data) {
+        $scope.application = data.Result[0];
     });
 
     $scope.rollBack = function (id) {

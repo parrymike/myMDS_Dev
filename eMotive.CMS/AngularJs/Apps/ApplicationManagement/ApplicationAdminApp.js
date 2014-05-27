@@ -124,10 +124,10 @@ applicationAdminApp.controller("CreateController", function ($scope, $applicatio
               "title": "Application Details",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/home.html"
           },
-          /*{
+          {
               "title": "Course Access",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/courses.html"
-          },*/
+          },
           {
               "title": "Role Access",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/roles.html"
@@ -236,10 +236,10 @@ applicationAdminApp.controller("EditController", function ($scope, $applicationS
               "title": "Application Details",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/home.html"
           },
-         /* {
+          {
               "title": "Course Access",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/courses.html"
-          },*/
+          },
           {
               "title": "Role Access",
               "template": "/AngularJs/Apps/ApplicationManagement/Templates/tabs/roles.html"

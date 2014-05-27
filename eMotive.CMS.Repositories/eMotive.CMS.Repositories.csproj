@@ -68,6 +68,7 @@
     <Compile Include="Objects\Services\DocumentManager\UploadLocation.cs" />
     <Compile Include="Objects\Users\Role.cs" />
     <Compile Include="Objects\Users\User.cs" />
+    <Compile Include="Objects\Users\UserType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

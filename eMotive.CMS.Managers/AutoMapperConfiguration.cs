@@ -52,8 +52,8 @@ namespace eMotive.CMS.Managers
 
         private static void ConfigureUserMapping()
         {
-          //  Mapper.CreateMap<Rep.User.User, User>();
-          //  Mapper.CreateMap<User, Rep.User.User>();
+            Mapper.CreateMap<Rep.Users.User, Mod.Users.User>();
+            Mapper.CreateMap<Mod.Users.User, Rep.Users.User>();
         }
 
         private static void ConfigureCourseMapping()

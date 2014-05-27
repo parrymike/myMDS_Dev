@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -19,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <TypeScriptToolsVersion>1.0</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,10 +40,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="eMotive.CMS.IoC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\eMotive.CMS.IoC\obj\Debug\eMotive.CMS.IoC.dll</HintPath>
-    </Reference>
     <Reference Include="FluentValidation, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FluentValidation.5.1.0.0\lib\Net40\FluentValidation.dll</HintPath>
@@ -182,6 +180,11 @@
     <Content Include="AngularJs\Apps\ApplicationManagement\Templates\Tabs\roles.html" />
     <Content Include="AngularJs\Apps\ApplicationManagement\Templates\Tabs\home.html" />
     <Content Include="AngularJs\Apps\AuditManagement\Templates\Modals\Audit.html" />
+    <Content Include="AngularJs\Apps\UserManagement\UserAdminApp.js" />
+    <Content Include="AngularJs\Apps\UserManagement\Templates\Audit.html" />
+    <Content Include="AngularJs\Apps\UserManagement\Templates\Create.html" />
+    <Content Include="AngularJs\Apps\UserManagement\Templates\Edit.html" />
+    <Content Include="AngularJs\Apps\UserManagement\Templates\Home.html" />
     <Content Include="AngularJs\Apps\PageManagement\PageAdminApp.js" />
     <Content Include="AngularJs\Apps\PageManagement\Templates\Audit.html" />
     <Content Include="AngularJs\Apps\PageManagement\Templates\EditPage.html" />
@@ -211,13 +214,15 @@
     <Content Include="AngularJs\Apps\RoleManagement\Templates\Audit.html" />
     <Content Include="AngularJs\Apps\RoleManagement\Templates\Home.html" />
     <Content Include="AngularJs\Modules\ui.tinymce.js" />
+    <Content Include="AngularJs\Services\UserServices.js" />
     <Content Include="AngularJs\Services\PageServices.js" />
     <Content Include="AngularJs\Services\ApplicationServices.js" />
     <Content Include="AngularJs\Services\EmailServices.js" />
     <Content Include="AngularJs\Services\EventServices.js" />
     <Content Include="AngularJs\Services\CourseServices.js" />
     <Content Include="AngularJs\Services\RoleServices.js" />
-    <Content Include="Content\assets\avatars\00294296P.jpg" />
+    <Content Include="Scripts\angular-datatables.min.js" />
+    <Content Include="Content\assets\avatars\0294296P.jpg" />
     <Content Include="Content\assets\avatars\avatar.png" />
     <Content Include="Content\assets\avatars\avatar1.png" />
     <Content Include="Content\assets\avatars\avatar2.png" />
@@ -1722,6 +1727,7 @@
     <Content Include="Views\Shared\_LayoutAceAdmin.cshtml" />
     <Content Include="Views\Test\PagesTest.cshtml" />
     <Content Include="Views\Shared\_LayoutHoMAdmin.cshtml" />
+    <Content Include="Views\Test\UsersTest.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1757,6 +1763,10 @@
       <Project>{B686B972-BDAA-439D-925A-1BD9E485ED64}</Project>
       <Name>eMotive.CMS.Extensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\eMotive.CMS.IoC\eMotive.CMS.IoC.csproj">
+      <Project>{46f7d329-5ae8-47bf-bd04-61a89d8af0d8}</Project>
+      <Name>eMotive.CMS.IoC</Name>
+    </ProjectReference>
     <ProjectReference Include="..\eMotive.CMS.Managers\eMotive.CMS.Managers.csproj">
       <Project>{B43AD7B5-6949-4D01-AA80-36683FFF0BB0}</Project>
       <Name>eMotive.CMS.Managers</Name>
@@ -1777,11 +1787,15 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="AngularJs\Apps\UserManagement\data.json" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ProjectExtensions>

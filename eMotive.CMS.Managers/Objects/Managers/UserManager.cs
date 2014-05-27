@@ -24,73 +24,72 @@ namespace eMotive.CMS.Managers.Objects.Managers
 
     public class UserManager : IUserManager
     {
+        private readonly IUserRepository _userRep;
 
-        private readonly IUserRepository userRep;
-        private readonly ISearchManager searchManager;
-        private readonly IAccountManager accountManager;
-
-        public UserManager(IUserRepository _userRep)
+        public UserManager(IUserRepository userRep)
         {
-            userRep = _userRep;
-
+            _userRep = userRep;
             AutoMapperConfiguration.Configure(Map.User);
         }
 
         public IMappingEngine Mapper { get; set; }
-        public ISearchManager SearchManager { get; set; }
+        //public ISearchManager SearchManager { get; set; }
         public IMessageBusService MessageBusService { get; set; }
+        public IEventManagerService EventManagerService { get; set; }
         public IRoleManager RoleManager { get; set; }
-        public IAuditService AuditService { get; set; }
+        //public IAuditService AuditService { get; set; }
 
         public User New()
         {
-            return Mapper.Map<repUsers.User, User>(userRep.New());
+            var userRep = _userRep.New();
+            return Mapper.Map<repUsers.User, User>(userRep);
         }
 
         public User Fetch(int id)
         {
-            var repUser = userRep.Fetch(id);
+            var repUser = _userRep.Fetch(id);
 
             return Mapper.Map<repUsers.User, User>(repUser);
         }
 
         public IEnumerable<User> FetchAll()
         {
-            return Mapper.Map<IEnumerable<repUsers.User>, IEnumerable<User>>(userRep.FetchAll());
+            return Mapper.Map<IEnumerable<repUsers.User>, IEnumerable<User>>(_userRep.FetchAll());
         }
 
+        public IEnumerable<User> Fetch(IEnumerable<int> ids)
+        {
+            return Mapper.Map<IEnumerable<repUsers.User>, IEnumerable<User>>(_userRep.Fetch(ids));
+        }
+
+        /*
         public User Fetch(string username)
         {
-            var repUser = userRep.Fetch(username, FetchByUserField.Username);
+            var repUser = _userRep.Fetch(username, FetchByUserField.Username);
 
             return Mapper.Map<repUsers.User, User>(repUser);
         }
 
         public string FetchUserNotes(string username)
         {
-            return userRep.FetUserNotes(username);
+            return _userRep.FetUserNotes(username);
         }
 
         public bool SaveUserNotes(string username, string notes)
         {
-            return userRep.SaveUserNotes(username, notes);
-        }
-
-        public IEnumerable<User> Fetch(IEnumerable<int> ids)
-        {
-            return Mapper.Map<IEnumerable<repUsers.User>, IEnumerable<User>>(userRep.Fetch(ids));
+            return _userRep.SaveUserNotes(username, notes);
         }
 
         public IEnumerable<User> Fetch(IEnumerable<string> usernames)
         {
-            return Mapper.Map<IEnumerable<repUsers.User>, IEnumerable<User>>(userRep.Fetch(usernames));
+            return Mapper.Map<IEnumerable<repUsers.User>, IEnumerable<User>>(_userRep.Fetch(usernames));
         }
 
         public bool Create(User user, out int id)
         {
             var repUser = Mapper.Map<User, repUsers.User>(user);
 
-            var checkUser = userRep.Fetch(user.Username, FetchByUserField.Username);
+            var checkUser = _userRep.Fetch(user.Username, FetchByUserField.Username);
 
             if (checkUser != null)
             {
@@ -109,7 +108,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
                 }
             }
 
-            checkUser = userRep.Fetch(user.Email, FetchByUserField.Email);
+            checkUser = _userRep.Fetch(user.Email, FetchByUserField.Email);
 
             if (checkUser != null)
             {
@@ -122,7 +121,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
             }
 
             int createId;
-            if (userRep.Create(repUser, out createId))
+            if (_userRep.Create(repUser, out createId))
             {
                 user.ID = createId;
 
@@ -145,7 +144,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
 
         public bool Update(User user)
         {
-            var checkUser = userRep.Fetch(user.Username, FetchByUserField.Username);
+            var checkUser = _userRep.Fetch(user.Username, FetchByUserField.Username);
 
             if (checkUser != null)
             {
@@ -156,7 +155,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
                 }
             }
 
-            checkUser = userRep.Fetch(user.Email, FetchByUserField.Email);
+            checkUser = _userRep.Fetch(user.Email, FetchByUserField.Email);
 
             if (checkUser != null)
             {
@@ -169,7 +168,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
 
             var repUser = Mapper.Map<User, repUsers.User>(user);
 
-            if (userRep.Update(repUser))
+            if (_userRep.Update(repUser))
             {
                 searchManager.Update(new UserSearchDocument(repUser));
                 return true;
@@ -184,9 +183,9 @@ namespace eMotive.CMS.Managers.Objects.Managers
         {
             var user = Fetch(id);
 
-            if (userRep.Delete(Mapper.Map<User, repUsers.User>(user)))
+            if (_userRep.Delete(Mapper.Map<User, repUsers.User>(user)))
             {
-                var deletedUser = userRep.Fetch(user.ID);
+                var deletedUser = _userRep.Fetch(user.ID);
                 searchManager.Update(new UserSearchDocument(deletedUser));
                 AuditService.ObjectAuditLog(ActionType.Delete, n => n.ID, user);
                 return true;
@@ -201,7 +200,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
         {
             if (searchResult.Items.HasContent())
             {
-                var repItems = userRep.Fetch(searchResult.Items.Select(n => n.ID).ToList());
+                var repItems = _userRep.Fetch(searchResult.Items.Select(n => n.ID).ToList());
                 if (repItems.HasContent())
                 {
                     return Mapper.Map<IEnumerable<repUsers.User>, IEnumerable<User>>(repItems);
@@ -235,18 +234,18 @@ namespace eMotive.CMS.Managers.Objects.Managers
             }
             return searchManager.DoSearch(newSearch);
             //  var result = _rawResults = searchManager.DoSearch(newSearch);
-            /*
-                        if (result.Items.HasContent())
-                        {
-                            return Mapper.Map <IEnumerable<repUsers.User>,IEnumerable<User>> (userRep.Fetch(result.Items.Select(n => n.ID).ToList()));
-                        }*/
+            
+                       // if (result.Items.HasContent())
+                        //{
+                        //    return Mapper.Map <IEnumerable<repUsers.User>,IEnumerable<User>> (userRep.Fetch(result.Items.Select(n => n.ID).ToList()));
+                        //}
 
             return null;
         }
 
         public void ReindexSearchRecords()
         {
-            var records = userRep.FetchAll();
+            var records = _userRep.FetchAll();
 
             if (records.IsEmpty())
             {
@@ -281,5 +280,6 @@ namespace eMotive.CMS.Managers.Objects.Managers
         {
             throw new System.NotImplementedException();
         }
+        */
     }
 }

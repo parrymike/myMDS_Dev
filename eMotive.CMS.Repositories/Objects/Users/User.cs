@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace eMotive.CMS.Repositories.Objects.Users
 {
@@ -9,8 +10,13 @@ namespace eMotive.CMS.Repositories.Objects.Users
         public string Forename { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
+        public string UniversityID { get; set; }
+        public string RegistrationStatus { get; set; }
         public bool Enabled { get; set; }
         public bool Archived { get; set; }
+        public DateTime LastLogin { get; set; }
+
+        public UserType UserType { get; set; }
 
         public IEnumerable<Role> Roles { get; set; }
     }

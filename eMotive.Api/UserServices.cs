@@ -14,6 +14,7 @@ using ServiceStack.ServiceInterface;
 namespace eMotive.Api.Services.Users
 {
 
+   /*
     [Route("/Users/New", "GET")]
     public class NewUser
     {
@@ -31,7 +32,7 @@ namespace eMotive.Api.Services.Users
     {
         public AuditRecord record { get; set; }
     }
-
+    */
 
     [Route("/Users")]
     [Route("/Users/{Ids}")]
@@ -41,6 +42,7 @@ namespace eMotive.Api.Services.Users
     }
 
 
+    /*
     [Route("/Users", "DELETE")]
     public class DeleteUser
     {
@@ -60,6 +62,7 @@ namespace eMotive.Api.Services.Users
     {
         public RoleSearch RoleSearch { get; set; }
     }
+    */
 
     //http://stackoverflow.com/questions/15231537/recommended-servicestack-api-structure/15235822#15235822
     public class UserService : Service
@@ -75,6 +78,7 @@ namespace eMotive.Api.Services.Users
             _auditService = auditService;
         }
 
+        /*
         public object Get(NewUser request)
         {
             return new ServiceResult<User>
@@ -161,6 +165,7 @@ namespace eMotive.Api.Services.Users
 
         }
 
+        /*
         public object Post(SaveUser request)
         {
             int id;
@@ -206,5 +211,6 @@ namespace eMotive.Api.Services.Users
                 Errors = issues
             };
         }
+        */
     }
 }

@@ -21,7 +21,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         public UserRepository(string connectionString)
         {
             _connectionString = connectionString;
-            _userFields = "`id`, `username`, `forename`, `surname`, `email`, `enabled`, `archived`";
+            _userFields = "u.`id`, u.`username`, u.`forename`, u.`surname`, u.`email`, u.`enabled`, u.`archived`, u.`universityid`, u.`registrationstatus`, u.`lastlogin`";
         }
 
         internal IDbConnection Connection
@@ -41,7 +41,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         {
             using (var cn = Connection)
             {
-                var sql = string.Format("SELECT {0} FROM `users` WHERE `id`=@id;", _userFields);
+                var sql = string.Format("SELECT {0} FROM `users` u WHERE `id`=@id;", _userFields);
 
                 var user = cn.Query<User>(sql, new { id = id }).SingleOrDefault();
 
@@ -61,7 +61,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         {
             using (var cn = Connection)
             {
-                var sql = string.Format("SELECT {0} FROM `users` WHERE `{1}`=@val;", _userFields, field);
+                var sql = string.Format("SELECT {0} FROM `users` u WHERE `{1}`=@val;", _userFields, field);
 
                 var user = cn.Query<User>(sql, new { val = value }).SingleOrDefault();
 
@@ -103,7 +103,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         {
             using (var cn = Connection)
             {
-                var sql = string.Format("SELECT {0} FROM `users` WHERE Archived=0;", _userFields);
+                var sql = string.Format("SELECT {0} FROM `users` u WHERE Archived=0;", _userFields);
 
                 var users = cn.Query<User>(sql);
 
@@ -160,7 +160,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
             using (var cn = Connection)
             {
-                var sql = string.Format("SELECT {0} FROM `users` WHERE `id` IN @ids  AND Archived=0;", _userFields);
+                var sql = string.Format("SELECT {0} FROM `users` u WHERE `id` IN @ids  AND Archived=0;", _userFields);
 
                 var users = cn.Query<User>(sql, new { ids = ids });
 
@@ -210,7 +210,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
             using (var cn = Connection)
             {
-                var sql = string.Format("SELECT {0} FROM `users` WHERE `username` IN @usernames AND Archived=0;", _userFields);
+                var sql = string.Format("SELECT {0} FROM `users` u WHERE `username` IN @usernames AND Archived=0;", _userFields);
 
                 var users = cn.Query<User>(sql, new { usernames = usernames });
 

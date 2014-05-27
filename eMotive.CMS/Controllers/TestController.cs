@@ -57,5 +57,11 @@ namespace eMotive.CMS.Controllers
         {
             return View();
         }
+
+        [Route("Users")]
+        public ActionResult UsersTest()
+        {
+            return View();
+        }
 	}
 }

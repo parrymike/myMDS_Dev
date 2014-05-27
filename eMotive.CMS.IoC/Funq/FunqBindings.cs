@@ -22,11 +22,9 @@ namespace eMotive.CMS.IoC.Funq
             var luceneIndex = ConfigurationManager.AppSettings["LuceneIndex"] ?? string.Empty;
             container.Register(c => Mapper.Engine);
 
-           // container.Register<IAuditService>(c => new AuditService())
 
             #region repositories
             container.Register<IPageRepository>(c => new PageRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
-         //   container.Register<IRoleRepository>(c => new RoleRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
             container.Register<IUserRepository>(c => new UserRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
             container.Register<ICourseRepository>(c => new CourseRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
             container.Register<IApplicationRepository>(c => new ApplicationRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
@@ -38,9 +36,7 @@ namespace eMotive.CMS.IoC.Funq
             container.Register<IMessageBusService>(c => new MessageBusService()).ReusedWithin(ReuseScope.Request);
             container.Register<IDocumentManagerService>(c => new DocumentManagerService(c.Resolve<IServiceRepository>())).ReusedWithin(ReuseScope.Request);
 
-            container.Register<IEventManagerService>(c => new EventManagerService(repositoryConnectionString) { AuditService = c.Resolve<IAuditService>()}).ReusedWithin(ReuseScope.Request);
-
-
+            container.Register<IEventManagerService>(c => new EventManagerService(repositoryConnectionString) { AuditService = c.Resolve<IAuditService>() }).ReusedWithin(ReuseScope.Request);
 
             container.Register<IEmailService>(c => new EmailService(repositoryConnectionString)
             {
@@ -53,14 +49,14 @@ namespace eMotive.CMS.IoC.Funq
             #region managers
             //container.Register<ISearchManager>(c => new SearchManager(luceneIndex)).ReusedWithin(ReuseScope.Container);
 
-          /*  container.Register<IRoleManager>(c => new RoleManager(c.Resolve<IRoleRepository>())
-            {
-                EventManagerService = c.Resolve<IEventManagerService>(),
-                Mapper = c.Resolve<IMappingEngine>(),
-                SearchManager = null,//c.Resolve<ISearchManager>(),
-                MessageBusService = c.Resolve<IMessageBusService>(),
-                AuditService = c.Resolve<IAuditService>()
-            }).ReusedWithin(ReuseScope.Request);*/
+            /*  container.Register<IRoleManager>(c => new RoleManager(c.Resolve<IRoleRepository>())
+              {
+                  EventManagerService = c.Resolve<IEventManagerService>(),
+                  Mapper = c.Resolve<IMappingEngine>(),
+                  SearchManager = null,//c.Resolve<ISearchManager>(),
+                  MessageBusService = c.Resolve<IMessageBusService>(),
+                  AuditService = c.Resolve<IAuditService>()
+              }).ReusedWithin(ReuseScope.Request);*/
 
             container.Register<IPageManager>(c => new PageManager(c.Resolve<IPageRepository>())
             {
@@ -70,8 +66,8 @@ namespace eMotive.CMS.IoC.Funq
                 MessageBusService = c.Resolve<IMessageBusService>(),
                 AuditService = c.Resolve<IAuditService>()
             }).ReusedWithin(ReuseScope.Request);
-            
-            
+
+
             container.Register<ICourseManager>(c => new CourseManager(c.Resolve<ICourseRepository>())
                         {
                             EventManagerService = c.Resolve<IEventManagerService>(),
@@ -90,8 +86,16 @@ namespace eMotive.CMS.IoC.Funq
                 AuditService = c.Resolve<IAuditService>()
             }).ReusedWithin(ReuseScope.Request);
 
+            container.Register<IUserManager>(c => new UserManager(c.Resolve<IUserRepository>())
+            {
+                EventManagerService = c.Resolve<IEventManagerService>(),
+                Mapper = c.Resolve<IMappingEngine>(),
+                //SearchManager = null,//c.Resolve<ISearchManager>(),
+                MessageBusService = c.Resolve<IMessageBusService>(),
+                //AuditService = c.Resolve<IAuditService>()
+            }).ReusedWithin(ReuseScope.Request);
+
             container.Register<INavigationManager>(c => new NavigationManager());
-            //   Bind<IRoleManager>().To<RoleManager>().InRequestScope();
             // Bind<ISearchManager>().To<SearchManager>().InSingletonScope().WithConstructorArgument("_indexLocation", ConfigurationManager.AppSettings["LuceneIndex"]);
 
             #endregion

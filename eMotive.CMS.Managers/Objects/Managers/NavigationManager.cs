@@ -35,6 +35,14 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                         URL = "/Test/Emails",
                                         Icon = "menu-icon fa fa-bolt",
                                         Title = "Manage Email Events"
+                                    },
+                                    new MenuItem
+                                    {
+                                        ID = 1,
+                                        Name = "PageAdmin",
+                                        URL = "/Test/Pages",
+                                        Icon = "menu-icon fa fa-book",
+                                        Title = "Manage Pages"
                                     }
                                 /*
                                 new MenuItem

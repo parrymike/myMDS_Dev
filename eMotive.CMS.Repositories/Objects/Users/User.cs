@@ -18,6 +18,9 @@ namespace eMotive.CMS.Repositories.Objects.Users
 
         public UserType UserType { get; set; }
 
+
+        public IEnumerable<UserCourseYear> UserCourseYears { get; set; }
         public IEnumerable<Role> Roles { get; set; }
+
     }
 }

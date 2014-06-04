@@ -3,24 +3,54 @@
     <h1>
         Users<small>
             <i class="fa fa-angle-double-right"></i>
-            manage users
+            manage users - ngTables
         </small>
     </h1>
 </div>
 
+<button ng-click="tableParams.sorting({})" class="btn btn-default pull-right">Clear sorting</button>
+<button ng-click="tableParams.filter({})" class="btn btn-default pull-right">Clear filter</button>
+Showing {{tableParams.total()}} of {{users.length}} entries
+
+
 
 <div class="row">
-    <div class="col-sm-offset-2 col-sm-8">
-        <table datatable class="table table-striped table-bordered table-hover">
-            <thead>
-                <tr><th>ID</th><th>Forename</th></tr>
-            </thead>
-            <tbody>
-                <tr ng-animate="'animate'" ng-repeat="user in users">
-                    <td>{{user.ID}}</td>
-                    <td>{{user.Forename}}</td>
-                </tr>
-            </tbody>
+    <div class="col-sm-offset-1 col-sm-10">
+        <table ng-table="tableParams" show-filter="true" class="table table-striped table-bordered table-hover">
+            <tr ng-repeat="user in $data">
+                <td data-title="'Surname'" sortable="'Surname'" filter="{ 'Surname': 'text' }">
+                    <span ng-if="!user.$edit">{{user.Surname}}</span>
+                    <div ng-if="user.$edit"><input class="form-control" type="text" ng-model="user.Surname" /></div>
+                </td>
+                <td data-title="'Forename'" sortable="'Forename'" filter="{ 'Forename': 'text' }">
+                    <span ng-if="!user.$edit">{{user.Forename}}</span>
+                    <div ng-if="user.$edit"><input class="form-control" type="text" ng-model="user.Forename" /></div>
+                </td>
+                <td data-title="'Email'" sortable="'Email'" filter="{ 'Email': 'text' }">
+                    <span ng-if="!user.$edit"><a ng-href="mailto:{{user.Email}}">{{user.Email}}</a></span>
+                    <div ng-if="user.$edit"><input class="form-control" type="text" ng-model="user.Email" /></div>
+                </td>
+                <td data-title="'UoB ID'" sortable="'UniversityID'" filter="{ 'UniversityID': 'text' }">
+                    {{user.UniversityID}}
+                </td>
+                <td data-title="'Username'" sortable="'Username'" filter="{ 'Username': 'text' }">
+                    {{user.Username}}
+                </td>
+                <td data-title="'User Type'" sortable="'Type'" filter="{ 'UserType': 'text' }">
+                    {{user.UserType.Type}}
+                </td>
+                <td data-title="'Course Years'" sortable="'UserCourseYears'" filter="{ 'UserCourseYears': 'text' }">
+                    
+                        <div ng-repeat="ucy in user.UserCourseYears">
+                            {{ucy.CourseYear.Abbreviation}} {{ucy.AcademicYear}}
+                        </div>
+
+                </td>
+                <td data-title="" width="200">
+                    <a ng-show="!user.$edit" href="" class="btn btn-xs btn-info" ng-click="user.$edit = true"><i class="fa fa-edit bigger-120"></i> Edit </a>
+                    <a ng-show="user.$edit" href="" class="btn btn-xs btn-success" ng-click="user.$edit = false"><i class="fa fa-save bigger-120"></i> Save </a>
+                </td>
+            </tr>
         </table>
     </div>
 </div>

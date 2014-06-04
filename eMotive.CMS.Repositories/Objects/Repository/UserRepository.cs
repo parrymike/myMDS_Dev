@@ -9,6 +9,7 @@ using eMotive.CMS.Extensions;
 using eMotive.CMS.Repositories.Interfaces;
 using eMotive.CMS.Repositories.Objects.Users;
 using MySql.Data.MySqlClient;
+using eMotive.CMS.Repositories.Objects.Courses;
 
 namespace eMotive.CMS.Repositories.Objects.Repository
 {
@@ -103,19 +104,27 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         {
             using (var cn = Connection)
             {
-                var sql = string.Format("SELECT {0} FROM `users` u WHERE Archived=0;", _userFields);
+                var sql = string.Format("SELECT {0}, t.* FROM `users` u JOIN `usertypes` t ON t.`id` = u.`UserTypeId` WHERE Archived=0;", _userFields);
+                var users = new List<User>();
 
-                var users = cn.Query<User>(sql);
+                cn.Open();
+                users = cn.Query<User, UserType, User>(sql,
+                     (u, ut) =>
+                     {
+                         u.UserType = ut;
+                         return u;
+                     }
+                 ).ToList();
 
-                if (users.HasContent())
+                //Get user roles
+                //TODO: application roles rather than just roles
+                if (!users.IsEmpty())
                 {
-                    //var userDict = users.ToDictionary(k => k.ID, v => v);
-
                     sql = "SELECT a.`userId`, b.* FROM `userHasRoles` a INNER JOIN `roles` b ON a.`roleID`=b.`id` WHERE a.`userId` IN @ids;";
 
                     var roles = cn.Query<RoleMap>(sql, new { ids = users.Select(n => n.ID) });
 
-                    if (roles.HasContent())
+                    if (!roles.IsEmpty())
                     {
                         var rolesUserDict = new Dictionary<int, ICollection<Role>>();
 
@@ -126,12 +135,12 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                             if (!rolesUserDict.TryGetValue(item.UserId, out currentList))
                             {
                                 rolesUserDict.Add(item.UserId, new Collection<Role>());
-                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name});
+                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name });
 
                             }
                             else
                             {
-                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name});
+                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name });
                             }
                         }
 
@@ -142,8 +151,70 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                     }
                 }
 
+                
+                //Get UserCourseYears
+                if (!users.IsEmpty())
+                {
+                    var userIDs = users.Select(n => n.ID);
+                    sql = "SELECT ucy.ID, ucy.UserID, ucy.AcademicYear, cy.ID AS CourseYearID, cy.Name, cy.Abbreviation, cy.BannerCode, cy.YearStart, cy. CourseID, cy.Year FROM `usercourseyears` ucy JOIN `courseyears` cy ON ucy.`courseyearid` = cy.`id` WHERE ucy.`UserID` IN @ids;";
+                    
+                    var usercourseyears = cn.Query<UserCourseYearMap>(sql, new { ids = userIDs });
+
+                    if (!usercourseyears.IsEmpty())
+                    {
+                        var userCourseYearsDict = new Dictionary<int, ICollection<UserCourseYear>>();
+
+                        foreach (var usercourseyear in usercourseyears)
+                        {
+                            ICollection<UserCourseYear> currentList;
+
+                            if (!userCourseYearsDict.TryGetValue(usercourseyear.UserID, out currentList))
+                            {
+                                userCourseYearsDict.Add(usercourseyear.UserID, new Collection<UserCourseYear>());
+                            }
+
+                            var userCourseYearTemp = new UserCourseYear { ID = usercourseyear.ID, UserID = usercourseyear.UserID, AcademicYear = usercourseyear.AcademicYear };
+                            userCourseYearTemp.CourseYear = new CourseYear { ID = usercourseyear.CourseYearID, Abbreviation = usercourseyear.Abbreviation, CourseID = usercourseyear.CourseID, Name = usercourseyear.Name, Year = usercourseyear.Year, YearStart = usercourseyear.YearStart };
+
+                            userCourseYearsDict[usercourseyear.UserID].Add(userCourseYearTemp);
+                           }
+
+                        foreach (var user in users)
+                        {
+                            ICollection<UserCourseYear> currentList;
+                            if (userCourseYearsDict.TryGetValue(user.ID, out currentList))
+                            {
+                                user.UserCourseYears = userCourseYearsDict[user.ID].Distinct();
+                                currentList = null;
+                            }
+                        }
+                    }
+
+                    
+
+
+
+                }
+
+
                 return users;
+
             }
+        }
+
+        private class UserCourseYearMap
+        {
+            public int ID { get; set; }
+            public int UserID { get; set; }
+            public string AcademicYear { get; set; }
+
+            public int CourseYearID { get; set; }
+            public string Name { get; set; }
+            public string Abbreviation { get; set; }
+            public string BannerCode { get; set; }
+            public DateTime YearStart { get; set; }
+            public int CourseID { get; set; }
+            public int Year { get; set; }
         }
 
         private class RoleMap
@@ -183,12 +254,12 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                             if (!rolesUserDict.TryGetValue(item.UserId, out currentList))
                             {
                                 rolesUserDict.Add(item.UserId, new Collection<Role>());
-                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name});
+                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name });
 
                             }
                             else
                             {
-                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name});
+                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name });
                             }
                         }
 
@@ -233,12 +304,12 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                             if (!rolesUserDict.TryGetValue(item.UserId, out currentList))
                             {
                                 rolesUserDict.Add(item.UserId, new Collection<Role>());
-                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name});
+                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name });
 
                             }
                             else
                             {
-                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name});
+                                rolesUserDict[item.UserId].Add(new Role { ID = item.ID, Name = item.Name });
                             }
                         }
 

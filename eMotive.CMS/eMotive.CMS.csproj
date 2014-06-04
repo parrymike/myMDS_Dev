@@ -180,6 +180,7 @@
     <Content Include="AngularJs\Apps\ApplicationManagement\Templates\Tabs\roles.html" />
     <Content Include="AngularJs\Apps\ApplicationManagement\Templates\Tabs\home.html" />
     <Content Include="AngularJs\Apps\AuditManagement\Templates\Modals\Audit.html" />
+    <Content Include="AngularJs\Apps\UserManagement\Templates\List.html" />
     <Content Include="AngularJs\Apps\UserManagement\UserAdminApp.js" />
     <Content Include="AngularJs\Apps\UserManagement\Templates\Audit.html" />
     <Content Include="AngularJs\Apps\UserManagement\Templates\Create.html" />
@@ -221,6 +222,7 @@
     <Content Include="AngularJs\Services\EventServices.js" />
     <Content Include="AngularJs\Services\CourseServices.js" />
     <Content Include="AngularJs\Services\RoleServices.js" />
+    <Content Include="Content\ng-table.min.css" />
     <Content Include="Scripts\angular-datatables.min.js" />
     <Content Include="Content\assets\avatars\0294296P.jpg" />
     <Content Include="Content\assets\avatars\avatar.png" />
@@ -808,6 +810,7 @@
     <Content Include="Scripts\locales\bootstrap-datepicker.zh-CN.js" />
     <Content Include="Scripts\locales\bootstrap-datepicker.zh-TW.js" />
     <Content Include="Scripts\ng-prettyjson.js" />
+    <Content Include="Scripts\ng-table.min.js" />
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />

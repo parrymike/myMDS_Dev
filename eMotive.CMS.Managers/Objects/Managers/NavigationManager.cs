@@ -43,6 +43,14 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                         URL = "/Test/Pages",
                                         Icon = "menu-icon fa fa-book",
                                         Title = "Manage Pages"
+                                    },
+                                    new MenuItem
+                                    {
+                                        ID = 1,
+                                        Name = "User Admin",
+                                        URL = "/Test/Users",
+                                        Icon = "menu-icon fa fa-users",
+                                        Title = "Manage Users"
                                     }
                                 /*
                                 new MenuItem

@@ -23,6 +23,7 @@ namespace eMotive.CMS.Managers
                         break;
                     case Maps.User:
                         ConfigureUserMapping();
+                        ConfigureCourseMapping();
                         break;
                     case Maps.Role:
                         ConfigureRoleMapping();
@@ -54,6 +55,12 @@ namespace eMotive.CMS.Managers
         {
             Mapper.CreateMap<Rep.Users.User, Mod.Users.User>();
             Mapper.CreateMap<Mod.Users.User, Rep.Users.User>();
+
+            Mapper.CreateMap<Rep.Users.UserType, Mod.Users.UserType>();
+            Mapper.CreateMap<Mod.Users.UserType, Rep.Users.UserType>();
+
+            Mapper.CreateMap<Rep.Users.UserCourseYear, Mod.Users.UserCourseYear>();
+            Mapper.CreateMap<Mod.Users.UserCourseYear, Rep.Users.UserCourseYear>();
         }
 
         private static void ConfigureCourseMapping()

@@ -1,0 +1,31 @@
+﻿
+<div class="page-header">
+    <h1>
+        Users<small>
+            <i class="fa fa-angle-double-right"></i>
+            manage users - ngTables
+        </small>
+    </h1>
+</div>
+
+<button ng-click="tableParams.sorting({})" class="btn btn-default pull-right">Clear sorting</button>
+<button ng-click="tableParams.filter({})" class="btn btn-default pull-right">Clear filter</button>
+Showing {{tableParams.total()}} of {{users.length}} entires
+    <div class="row">
+        <div class="col-sm-offset-2 col-sm-8">
+            <table ng-table="tableParams" show-filter="true" class="table table-striped table-bordered table-hover">
+                <tr ng-repeat="user in $data">
+                    <td data-title="'Id'" sortable="'ID'" filter="{ 'ID': 'text' }"> {{user.ID}} </td>
+                    <td data-title="'Forename'" sortable="'Forename'" filter="{ 'Forename': 'text' }">
+                        <span ng-if="!user.$edit">{{user.Forename}}</span>
+                        <div ng-if="user.$edit"><input class="form-control" type="text" ng-model="user.Forename" /></div>
+                    </td>
+                    <td data-title="'UoB ID'" sortable="'UniversityID'" filter="{ 'UniversityID': 'text' }">{{user.UniversityID}}</td>
+                    <td data-title="'Actions'" width="200">
+                        <a ng-if="!user.$edit" href class="btn btn-default btn-xs" ng-click="user.$edit = true">Edit</a>
+                        <a ng-if="user.$edit" href="" class="btn btn-primary btn-xs" ng-click="user.$edit = false">Save</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>

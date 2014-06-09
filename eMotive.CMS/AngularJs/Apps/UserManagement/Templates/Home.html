@@ -39,11 +39,11 @@ Showing {{tableParams.total()}} of {{users.length}} entries
                 <td data-title="'User Type'" sortable="'Type'" filter="{ 'UserType': 'text' }">
                     {{user.UserType.Type}}
                 </td>
-                <td data-title="'Course Years'" sortable="'UserCourseYears'" filter="{ 'UserCourseYears': 'text' }">
+                <td data-title="'Current Course Year'" sortable="'UserCourseYears'" filter="{ 'UserCourseYears': 'text' }">
                     
-                        <div ng-repeat="ucy in user.UserCourseYears">
-                            {{ucy.CourseYear.Abbreviation}} {{ucy.AcademicYear}}
-                        </div>
+                       
+                            {{user.UserCourseYears[0].CourseYear.Abbreviation}} {{user.UserCourseYears[0].AcademicYear}}
+                       
 
                 </td>
                 <td data-title="" width="200">

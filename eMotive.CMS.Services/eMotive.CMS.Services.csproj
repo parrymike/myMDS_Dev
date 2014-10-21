@@ -129,6 +129,8 @@
     <Compile Include="Objects\Service\EmailService.cs" />
     <Compile Include="Objects\Service\EventManagerService.cs" />
     <Compile Include="Objects\Service\MessageBusService.cs" />
+    <Compile Include="Objects\Service\MSSQL\EmailService.cs" />
+    <Compile Include="Objects\Service\MSSQL\EventManagerService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

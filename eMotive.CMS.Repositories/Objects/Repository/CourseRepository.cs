@@ -46,12 +46,10 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                     id = -1;
 
                     var sql = "INSERT INTO Courses (Name, Abbreviation, BannerCode) Values (@Name, @Abbreviation, @BannerCode);";
-
                     success &= cn.Execute(sql, course) > 0;
-
-                    var newId = cn.Query<ulong>("SELECT CAST(LAST_INSERT_ID() AS UNSIGNED INTEGER);").SingleOrDefault();
+                    
+                    var newId = cn.Query<Int32>("SELECT CAST(IDENT_CURRENT('Courses') AS INT);").SingleOrDefault();
                     var convId = id = Convert.ToInt32(newId);
-
 
                     if (id > 0)
                     {
@@ -64,7 +62,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                                 return n;
                             }).ToList();
 
-                            sql = "INSERT INTO CourseYears (Name, Abbreviation, BannerCode, YearStart, CourseID, Year) Values (@Name, @Abbreviation, @BannerCode, @YearStart, @CourseID, @Year);";
+                            sql = "INSERT INTO CourseYears (Name, Abbreviation, YearStart, CourseID, Year) Values (@Name, @Abbreviation, @YearStart, @CourseID, @Year);";
 
                             success = cn.Execute(sql, courseYears/*course.CourseYears*/) > 0; //TODO: check this out! should I be passing course.Courseyears in or courseYears list which I attached the newly inserted courseyear ID to each course year.
                             // id = newId;
@@ -90,11 +88,11 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                     //TODO: We might need to put to ID aswel, so a delete and then insert inc ID? This would be needed for rolling back a deleted course
                     var sql =
-                        "UPDATE `Courses` SET `Name` = @Name, `Abbreviation` = @Abbreviation, `BannerCode` = @BannerCode WHERE `id`=@id;";
+                        "UPDATE Courses SET Name = @Name, Abbreviation = @Abbreviation, BannerCode = @BannerCode WHERE id=@id;";
 
                     success &= cn.Execute(sql, new { Name = course.Name, Abbreviation = course.Abbreviation, BannerCode = course.BannerCode, id = course.ID }) > 0;
 
-                    sql = "DELETE FROM `CourseYears` WHERE `CourseID`=@id;";
+                    sql = "DELETE FROM CourseYears WHERE CourseID=@id;";
 
                     cn.Execute(sql, new {id = course.ID}); //doesn't work checking rows affected here incase there were no rows in the old item, if there were none, the bool would flip success to false
 
@@ -102,7 +100,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                     {
 
                         sql =
-                            "INSERT INTO CourseYears (ID, Name, Abbreviation, BannerCode, YearStart, Year, CourseID) Values (@ID, @Name, @Abbreviation, @BannerCode, @YearStart, @Year, @CourseID);";
+                            "INSERT INTO CourseYears (ID, Name, Abbreviation, YearStart, Year, CourseID) Values (@ID, @Name, @Abbreviation, @YearStart, @Year, @CourseID);";
 
                         success &= cn.Execute(sql, course.CourseYears) > 0;
                         // id = newId;
@@ -129,23 +127,23 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                 {
                     cn.Open();
                     bool success = true;
-                    var sql = "SELECT `ID`, `Name`, `Abbreviation`, `BannerCode` FROM `Courses` WHERE `id`=@id;";
+                    var sql = "SELECT ID, Name, Abbreviation, BannerCode FROM Courses WHERE id=@id;";
 
                     var oldCourse = cn.Query<Course>(sql, new { id = course.ID }).SingleOrDefault();
 
                     if (oldCourse != null)
                     {
-                        sql = "SELECT `ID`, `Name`, `Abbreviation`, `BannerCode`, `YearStart`, `CourseID`, `Year` FROM `CourseYears` WHERE `CourseID` = @id;";
+                        sql = "SELECT ID, Name, Abbreviation, YearStart, CourseID, Year FROM CourseYears WHERE CourseID = @id;";
                         oldCourse.CourseYears = cn.Query<CourseYear>(sql, new { id = course.ID });
                     }
 
-                    sql = "UPDATE `Courses` SET `Name` = @Name, `Abbreviation` = @Abbreviation, `BannerCode` = @BannerCode WHERE `id`=@id;";
+                    sql = "UPDATE Courses SET Name = @Name, Abbreviation = @Abbreviation, BannerCode = @BannerCode WHERE id=@id;";
 
                     success &= cn.Execute(sql, new { Name = course.Name, Abbreviation = course.Abbreviation, BannerCode = course.BannerCode, id = course.ID }) > 0;
 
                     if (course.CourseYears.IsEmpty() && !oldCourse.CourseYears.IsEmpty())
                     {
-                        sql = "DELETE FROM `CourseYears` WHERE `CourseID`=@id;";
+                        sql = "DELETE FROM CourseYears WHERE CourseID=@id;";
 
                         success &= cn.Execute(sql, new { id = course.ID }) > 0;
                     }
@@ -154,7 +152,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                         if (oldCourse.CourseYears.IsEmpty() && !course.CourseYears.IsEmpty())
                         {
                             sql =
-                                "INSERT INTO `CourseYears` (`Name`, `Abbreviation`, `BannerCode`, `YearStart`, `CourseID`, `Year`) VALUES (@Name, @Abbreviation, @BannerCode, @YearStart, @CourseID, @Year);";
+                                "INSERT INTO CourseYears (Name, Abbreviation, YearStart, CourseID, Year) VALUES (@Name, @Abbreviation, @YearStart, @CourseID, @Year);";
                             var toCreateAll = course.CourseYears.Select(n =>
                             {
                                 n.CourseID = course.ID;
@@ -181,7 +179,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                             if (!toDelete.IsEmpty())
                             {
-                                sql = "DELETE FROM `CourseYears` WHERE `id`=@id;";
+                                sql = "DELETE FROM CourseYears WHERE id=@id;";
 
                                 success &= cn.Execute(sql, toDelete) > 0;
                             }
@@ -189,14 +187,14 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                             if (!toUpdate.IsEmpty())
                             {
                                 sql =
-                                    "UPDATE `CourseYears` SET `Name` = @Name, `Abbreviation` = @Abbreviation, `BannerCode` = @BannerCode, `YearStart` = @YearStart, `Year` = @Year WHERE `id`=@id;";
+                                    "UPDATE CourseYears SET Name = @Name, Abbreviation = @Abbreviation, YearStart = @YearStart, Year = @Year WHERE id=@id;";
                                 success &= cn.Execute(sql, toUpdate) > 0;
                             }
 
                             if (!toCreate.IsEmpty())
                             {
                                 sql =
-                                    "INSERT INTO `CourseYears` (`Name`, `Abbreviation`, `BannerCode`, `YearStart`, `CourseID`, `Year`) VALUES (@Name, @Abbreviation, @BannerCode, @YearStart, @CourseID, @Year );";
+                                    "INSERT INTO CourseYears (Name, Abbreviation, YearStart, CourseID, Year) VALUES (@Name, @Abbreviation, @YearStart, @CourseID, @Year );";
                                 success &= cn.Execute(sql, toCreateFinal) > 0;
                                 //  _connection.Execute()
                             }
@@ -221,10 +219,10 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                     cn.Open();
                     var success = true;
 
-                    var sql = "DELETE FROM `Courses` WHERE `Id`=@id;";
+                    var sql = "DELETE FROM Courses WHERE Id=@id;";
                     success &= cn.Execute(sql, new { id = course.ID }) > 0;
 
-                    sql = "DELETE FROM `CourseYears` WHERE `CourseID`=@CourseID;";
+                    sql = "DELETE FROM CourseYears WHERE CourseID=@CourseID;";
 
                     success &= cn.Execute(sql, new { CourseID = course.ID }) > 0;
 
@@ -246,7 +244,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                 if (course != null)
                 {
-                    sql = "SELECT ID, Name, Abbreviation, BannerCode, YearStart, CourseID, Year FROM CourseYears WHERE CourseID = @id;";
+                    sql = "SELECT ID, Name, Abbreviation, YearStart, CourseID, Year FROM CourseYears WHERE CourseID = @id;";
                     course.CourseYears = cn.Query<CourseYear>(sql, new { id = course.ID });
                 }
 
@@ -264,7 +262,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                 if (course != null)
                 {
-                    sql = "SELECT ID, Name, Abbreviation, BannerCode, YearStart, CourseID, Year FROM CourseYears WHERE CourseID = @id;";
+                    sql = "SELECT ID, Name, Abbreviation, YearStart, CourseID, Year FROM CourseYears WHERE CourseID = @id;";
                     course.CourseYears = cn.Query<CourseYear>(sql, new { id = course.ID });
                 }
 
@@ -282,7 +280,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                 if (!courses.IsEmpty())
                 {
-                    sql = "SELECT ID, Name, Abbreviation, BannerCode, YearStart, CourseID, Year FROM CourseYears;";
+                    sql = "SELECT ID, Name, Abbreviation, YearStart, CourseID, Year FROM CourseYears;";
                     var courseYears = cn.Query<CourseYear>(sql);
 
                     if (!courseYears.IsEmpty())
@@ -312,7 +310,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                 if (!courses.IsEmpty())
                 {
-                    sql = "SELECT ID, Name, Abbreviation, BannerCode, YearStart, CourseID, Year FROM CourseYears WHERE CourseID IN @ids;";
+                    sql = "SELECT ID, Name, Abbreviation, YearStart, CourseID, Year FROM CourseYears WHERE CourseID IN @ids;";
 
                     var results = cn.Query<CourseYear>(sql, new { ids = ids });
 

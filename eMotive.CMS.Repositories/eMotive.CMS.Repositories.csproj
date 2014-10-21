@@ -59,6 +59,12 @@
     <Compile Include="Objects\Pages\Section.cs" />
     <Compile Include="Objects\Repository\ApplicationRepository.cs" />
     <Compile Include="Objects\Repository\CourseRepository.cs" />
+    <Compile Include="Objects\Repository\MSSQL\ApplicationRepository.cs" />
+    <Compile Include="Objects\Repository\MSSQL\CourseRepository.cs" />
+    <Compile Include="Objects\Repository\MSSQL\PageRepository.cs" />
+    <Compile Include="Objects\Repository\MSSQL\RoleRepository.cs" />
+    <Compile Include="Objects\Repository\MSSQL\ServiceRepository.cs" />
+    <Compile Include="Objects\Repository\MSSQL\UserRepository.cs" />
     <Compile Include="Objects\Repository\PageRepository.cs" />
     <Compile Include="Objects\Repository\RoleRepository.cs" />
     <Compile Include="Objects\Repository\ServiceRepository.cs" />

@@ -20,9 +20,12 @@ namespace eMotive.CMS
         public override void Configure(Container container)
         {
             var repositoryConnectionString = ConfigurationManager.ConnectionStrings["Repositories"].ConnectionString ?? string.Empty;
+            var repositoryMSSQLConnectionString = ConfigurationManager.ConnectionStrings["MSSQLRepositories"].ConnectionString ?? string.Empty;
+            
             FunqBindings.Configure(container);
             //Rather than reference web and owin stuff in bindings dll, we bind IAuditService here as the references are availible in the web project
-            container.Register<IAuditService>(c => new AuditService(c.Resolve<IConfigurationService>(), HttpContext.Current.GetOwinContext().Authentication, repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
+            //container.Register<IAuditService>(c => new AuditService(c.Resolve<IConfigurationService>(), HttpContext.Current.GetOwinContext().Authentication, repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
+            container.Register<IAuditService>(c => new AuditService(c.Resolve<IConfigurationService>(), HttpContext.Current.GetOwinContext().Authentication, repositoryMSSQLConnectionString)).ReusedWithin(ReuseScope.Request);
 
             ControllerBuilder.Current.SetControllerFactory(new FunqControllerFactory(container));
             ServiceStackController.CatchAllController = reqCtx => container.TryResolve<TestController>();

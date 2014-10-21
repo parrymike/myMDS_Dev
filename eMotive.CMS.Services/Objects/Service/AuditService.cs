@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using Dapper;
 using eMotive.CMS.Extensions;
 using eMotive.CMS.Services.Interfaces;
@@ -38,7 +39,8 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             get
             {
-                return _connection ?? new MySqlConnection(_connectionString);
+                //return _connection ?? (_connection = new SqlConnection(_connectionString));
+                return new SqlConnection(_connectionString);
             }
         }
 
@@ -57,7 +59,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
             using (var connection = Connection)
             {
-                const string sql = "INSERT INTO `Audit`(`Date`,`Username`,`Action`,`ObjectID`,`Type`,`Object`,`Details`) VALUES (@Date, @Username, @Action, @ObjectID, @Type, @Object, @Details);";
+                const string sql = "INSERT INTO Audit(Date,Username,Action,ObjectID,Type,Object,Details) VALUES (@Date, @Username, @Action, @ObjectID, @Type, @Object, @Details);";
 
                 return connection.Execute(sql,
                     new
@@ -80,7 +82,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
             using (var connection = Connection)
             {
-                const string sql = "SELECT `ID`, `Date`,`Username`, `Action`, `Object`, `Details` FROM `Audit` WHERE `Type` = @Type AND `ObjectID` = @objectID ORDER BY `Date` DESC;";
+                const string sql = "SELECT ID, Date,Username, Action, Object, Details FROM Audit WHERE Type = @Type AND ObjectID = @objectID ORDER BY Date DESC;";
 
                 return connection.Query<AuditRecord>(sql, new {Type = obj.FullName, ObjectID = id});
             }

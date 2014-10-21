@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Transactions;
 using Dapper;
@@ -33,7 +34,8 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             get
             {
-                return _connection ?? new MySqlConnection(_connectionString);
+                //return _connection ?? new MySqlConnection(_connectionString);
+                return _connection ?? new SqlConnection(_connectionString);
             }
         }
 
@@ -57,11 +59,11 @@ namespace eMotive.CMS.Services.Objects.Service
             using (var cn = Connection)
             {
                     cn.Open();
-                    var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events`;";
+                    var sql = "SELECT Id, ApplicationId, Name, NiceName, Description, Enabled, System FROM Events;";
 
                     var events = cn.Query<EventDescription>(sql);
 
-                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags`;";
+                    sql = "SELECT ID, EventID, Tag, Description FROM EventReplacementTags;";
 
                     var eventTags = cn.Query<EventTag>(sql);
 
@@ -86,11 +88,11 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id`=@id;";
+                var sql = "SELECT Id, ApplicationId, Name, NiceName, Description, Enabled, System FROM Events WHERE Id=@id;";
 
                 var ev = cn.Query<EventDescription>(sql, new {id = Id}).SingleOrDefault();
 
-                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
+                sql = "SELECT ID, EventID, Tag, Description FROM EventReplacementTags WHERE EventID=@EventID;";
 
                 ev.Tags = cn.Query<EventTag>(sql, new { EventID = Id });
 
@@ -102,10 +104,10 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `Id` IN @ids;";
+                var sql = "SELECT Id, ApplicationId, Name, NiceName, Description, Enabled, System FROM Events WHERE Id IN @ids;";
                 var events = cn.Query<EventDescription>(sql, new {ids = Ids});
 
-                sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
+                sql = "SELECT ID, EventID, Tag, Description FROM EventReplacementTags WHERE EventID IN @EventIds;";
 
                 var eventTags = cn.Query<EventTag>(sql, new { EventIds = Ids });
 
@@ -130,13 +132,13 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `ApplicationId`=@applicationId;";
+                var sql = "SELECT Id, ApplicationId, Name, NiceName, Description, Enabled, System FROM Events WHERE ApplicationId=@applicationId;";
 
                 var events = cn.Query<EventDescription>(sql, new { applicationId = applicationId });
 
                 if (!events.IsEmpty())
                 {
-                    sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
+                    sql = "SELECT ID, EventID, Tag, Description FROM EventReplacementTags WHERE EventID IN @EventIds;";
 
                     var eventTags = cn.Query<EventTag>(sql, new {EventIds = events.Select(n => n.ID)});
 
@@ -216,13 +218,13 @@ namespace eMotive.CMS.Services.Objects.Service
                     cn.Open();
                     var success = true;
 
-                    var sql = "SELECT `Id`, `ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System` FROM `Events` WHERE `ApplicationID`=@applicationId;";
+                    var sql = "SELECT Id, ApplicationId, Name, NiceName, Description, Enabled, System FROM Events WHERE ApplicationID=@applicationId;";
 
                     var oldAppEvents = cn.Query<EventDescription>(sql, new { applicationId = applicationId });
 
                     if (!oldAppEvents.IsEmpty())
                     {
-                        sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID` IN @EventIds;";
+                        sql = "SELECT ID, EventID, Tag, Description FROM EventReplacementTags WHERE EventID IN @EventIds;";
 
                         var eventTags = cn.Query<EventTag>(sql, new {EventIds = oldAppEvents.Select(n => n.ID)});
 
@@ -243,9 +245,9 @@ namespace eMotive.CMS.Services.Objects.Service
 
                     if (newAppEvents.IsEmpty() && !oldAppEvents.IsEmpty())
                     {//All events have been removed, so just delete all
-                        sql = "DELETE FROM `Events` WHERE `ApplicationId`=@applicationId;";
+                        sql = "DELETE FROM Events WHERE ApplicationId=@applicationId;";
                         success &= cn.Execute(sql, new {applicationId = applicationId}) > 0;
-                        sql = "DELETE FROM `EventReplacementTags` WHERE `EventID` in @EventIDs;";
+                        sql = "DELETE FROM EventReplacementTags WHERE EventID in @EventIDs;";
 
                         success &= cn.Execute(sql, new {EventIDs = oldAppEvents.Select(n => n.ID)}) > 0;
                         if (success)
@@ -261,7 +263,7 @@ namespace eMotive.CMS.Services.Objects.Service
                     {
                         if (!newAppEvents.IsEmpty() && oldAppEvents.IsEmpty())
                         {//All events are new, so just do a create
-                            sql = "INSERT INTO `Events` (`ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System`) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
+                            sql = "INSERT INTO Events (ApplicationId, Name, NiceName, Description, Enabled, System) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
 
                             var newInsertEvents = newAppEvents.Select(n =>
                             {
@@ -307,11 +309,11 @@ namespace eMotive.CMS.Services.Objects.Service
 
                             if (!toDelete.IsEmpty())
                             {
-                                sql = "DELETE FROM `Events` WHERE `id`=@id;";
+                                sql = "DELETE FROM Events WHERE id=@id;";
 
                                 success &= cn.Execute(sql, toDelete) > 0;
 
-                                sql = "DELETE FROM `EventReplacementTags` WHERE `EventID` in @EventIDs;";
+                                sql = "DELETE FROM EventReplacementTags WHERE EventID in @EventIDs;";
 
                                 success &= cn.Execute(sql, new {EventIDs = toDelete.Select(n => n.ID)}) > 0;
 
@@ -338,7 +340,7 @@ namespace eMotive.CMS.Services.Objects.Service
                                 if (updateList.Count > 0)
                                 {
                                     sql =
-                                        "UPDATE `Events` SET `ApplicationId`=@ApplicationId, `Name`=@Name, `NiceName`=@NiceName, `Description`=@Description, `Enabled`=@Enabled, `System`=@System WHERE `ID`=@ID;";
+                                        "UPDATE Events SET ApplicationId=@ApplicationId, Name=@Name, NiceName=@NiceName, Description=@Description, Enabled=@Enabled, System=@System WHERE ID=@ID;";
                                     success &= cn.Execute(sql, updateList) > 0;
 
                                     if (success)
@@ -359,7 +361,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
                             if (!toCreate.IsEmpty())
                             {
-                                sql = "INSERT INTO `Events` (`ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System`) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
+                                sql = "INSERT INTO Events (ApplicationId, Name, NiceName, Description, Enabled, System) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
                                 ulong newId = 0;
 
                                 foreach (var create in toCreate)
@@ -398,20 +400,20 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             var updatedTags = new List<EventTag>();
 
-            var sql = "SELECT `ID`, `EventID`, `Tag`, `Description` FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
+            var sql = "SELECT ID, EventID, Tag, Description FROM EventReplacementTags WHERE EventID=@EventID;";
 
             var oldTags = cn.Query<EventTag>(sql, new {EventID = eventID});
 
             if (newTags.IsEmpty() && !oldTags.IsEmpty())
             {//All tags have been removed, so just delete all
-                sql = "DELETE FROM `EventReplacementTags` WHERE `EventID`=@EventID;";
+                sql = "DELETE FROM EventReplacementTags WHERE EventID=@EventID;";
                 success &= cn.Execute(sql, new { EventID = eventID }) > 0;
             }
             else
             {
                 if (!newTags.IsEmpty() && oldTags.IsEmpty())
                 {
-                    sql = "INSERT INTO `EventReplacementTags` (`ID`, `EventID`, `Tag`, `Description`) VALUES (@ID, @EventID, @Tag, @Description)";
+                    sql = "INSERT INTO EventReplacementTags (ID, EventID, Tag, Description) VALUES (@ID, @EventID, @Tag, @Description)";
 
                     var insertNewTags = newTags.Select(n =>
                     {
@@ -446,7 +448,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
                     if (!toDelete.IsEmpty())
                     {
-                        sql = "DELETE FROM `EventReplacementTags` WHERE `id`=@id;";
+                        sql = "DELETE FROM EventReplacementTags WHERE id=@id;";
 
                         success &= cn.Execute(sql, toDelete) > 0;
                     }
@@ -466,7 +468,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
                             if (!oldTagsHash.IsEmpty() && !newTagsHash.IsEmpty())
                                 return oldTagsHash.Any(newTagsHash.Contains);*/
-                        sql = "UPDATE `EventReplacementTags` SET `Tag`=@tag, `Description`=@description WHERE `ID`=@id";
+                        sql = "UPDATE EventReplacementTags SET Tag=@tag, Description=@description WHERE ID=@id";
 
                         success &= cn.Execute(sql, toUpdate) > 0;
 
@@ -476,7 +478,7 @@ namespace eMotive.CMS.Services.Objects.Service
 
                     if (!toCreateFinal.IsEmpty())
                     {
-                        sql = "INSERT INTO `EventReplacementTags` (`ID`, `EventID`, `Tag`, `Description`) VALUES (@ID, @EventID, @Tag, @Description)";
+                        sql = "INSERT INTO EventReplacementTags (ID, EventID, Tag, Description) VALUES (@ID, @EventID, @Tag, @Description)";
 
                         var insertNewTags = toCreateFinal.Select(n =>
                         {
@@ -514,7 +516,7 @@ namespace eMotive.CMS.Services.Objects.Service
                     var success = true;
                     id = -1;
 
-                    var sql = "INSERT INTO `Events` (`ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System`) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
+                    var sql = "INSERT INTO Events (ApplicationId, Name, NiceName, Description, Enabled, System) VALUES (@ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
                     success &= cn.Execute(sql, eventDescription) > 0;
 
                     var newId = cn.Query<ulong>("SELECT CAST(LAST_INSERT_ID() AS UNSIGNED INTEGER);").SingleOrDefault();
@@ -534,7 +536,7 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                const string sql = "UPDATE `Events` SET `ApplicationId`=@ApplicationId, `Name`=@Name, `NiceName`=@NiceName, `Description`=@Description, `Enabled`=@Enabled, `System`=@System WHERE `ID`=@id;";
+                const string sql = "UPDATE Events SET ApplicationId=@ApplicationId, Name=@Name, NiceName=@NiceName, Description=@Description, Enabled=@Enabled, System=@System WHERE ID=@id;";
 
                 return cn.Execute(sql, new { ApplicationId = eventDescription.ApplicationId, Name = eventDescription.Name, NiceName = eventDescription.NiceName, Description=eventDescription.Description, Enabled=eventDescription.Enabled, System=eventDescription.System, id = eventDescription.ID }) > 0;
             }
@@ -544,7 +546,7 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                const string sql = "DELETE FROM `Events` WHERE `ID`=@id;";
+                const string sql = "DELETE FROM Events WHERE ID=@id;";
 
                 return cn.Execute(sql, new { id = id }) > 0;
             }
@@ -560,10 +562,10 @@ namespace eMotive.CMS.Services.Objects.Service
 
                     var success = true;
 
-                    var sql = "DELETE FROM `Events` WHERE `ID`=@id;";
+                    var sql = "DELETE FROM Events WHERE ID=@id;";
                     success &= cn.Execute(sql, new { id = eventDescription.ID }) > 0;
 
-                    sql = "INSERT INTO `Events` (`ID`,`ApplicationId`, `Name`, `NiceName`, `Description`, `Enabled`, `System`) VALUES (@ID, @ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
+                    sql = "INSERT INTO Events (ID,ApplicationId, Name, NiceName, Description, Enabled, System) VALUES (@ID, @ApplicationId, @Name, @NiceName, @Description, @Enabled, @System);";
                     success &= cn.Execute(sql, eventDescription) > 0;
 
 
@@ -578,7 +580,7 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {//TODO: Have created and last updated?
-                const string sql = "INSERT INTO `ObjectAssignedToEvent` (`EventID`, `ObjectID`, `Type`, `Created`, `CreatedBy`) VALUES (@EventID, @ObjectID, @Type, @Created, @CreatedBy)";
+                const string sql = "INSERT INTO ObjectAssignedToEvent (EventID, ObjectID, Type, Created, CreatedBy) VALUES (@EventID, @ObjectID, @Type, @Created, @CreatedBy)";
 
                 return cn.Execute(sql, new { EventID = IdEvent, ObjectID = idField, Type = typeof(T), Created = DateTime.Now, CreatedBy = "Unknown" }) > 0;
             }
@@ -588,7 +590,7 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {//TODO: Have created and last updated?
-                const string sql = "INSERT INTO `ObjectAssignedToEvent` (`EventID`, `ObjectID`, `Type`, `Created`, `CreatedBy`) VALUES (@EventID, @ObjectID, @Type, @Created, @CreatedBy)";
+                const string sql = "INSERT INTO ObjectAssignedToEvent (EventID, ObjectID, Type, Created, CreatedBy) VALUES (@EventID, @ObjectID, @Type, @Created, @CreatedBy)";
 
                 return cn.Execute(sql, new { EventID = eventObject.EventId, ObjectID = eventObject.ObjectId, Type = eventObject.Type, Created = DateTime.Now, CreatedBy = "Unknown" }) > 0;
             }
@@ -598,7 +600,7 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                const string sql = "SELECT `ObjectID` FROM `ObjectAssignedToEvent` WHERE `Type`=@type AND `EventID`=@EventID;";
+                const string sql = "SELECT ObjectID FROM ObjectAssignedToEvent WHERE Type=@type AND EventID=@EventID;";
 
                 return cn.Query<int>(sql, new {Type = objectType.ToString(), EventID = idEvent});
             }
@@ -608,7 +610,7 @@ namespace eMotive.CMS.Services.Objects.Service
         {
             using (var cn = Connection)
             {
-                const string sql = "SELECT `ObjectID` FROM `ObjectAssignedToEvent` a INNER JOIN `Events` b ON a.`EventID`=b.`ID` WHERE a.`Type`=@type AND b.`Name`=@Name;";
+                const string sql = "SELECT ObjectID FROM ObjectAssignedToEvent a INNER JOIN Events b ON a.EventID=b.ID WHERE a.Type=@type AND b.Name=@Name;";
 
                 return cn.Query<int>(sql, new { Type = objectType.ToString(), Name = eventName });
             }

@@ -9,6 +9,7 @@ using eMotive.CMS.Extensions;
 using eMotive.CMS.Repositories.Interfaces;
 using eMotive.CMS.Repositories.Objects.Application;
 using MySql.Data.MySqlClient;
+using System.Data.SqlClient;
 
 namespace eMotive.CMS.Repositories.Objects.Repository
 {
@@ -49,15 +50,14 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                     success &= cn.Execute(sql, application) > 0;
 
-                    var newId = cn.Query<ulong>("SELECT CAST(LAST_INSERT_ID() AS UNSIGNED INTEGER);").SingleOrDefault();
-                    var convId = id = Convert.ToInt32(newId);
+                    var newId = cn.Query<Int32>("SELECT CAST(IDENT_CURRENT('Applications') AS INT);").SingleOrDefault();
 
 
                     if (id > 0)
                     {
                         var applicationRoles = application.Roles.Select(n =>
                         {
-                            n.ApplicationID = convId;
+                            n.ApplicationID = newId;
                             return n;
                         }).ToList();
 
@@ -71,7 +71,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                                 application.CourseAccess.Select(
                                     n =>
                                     {
-                                        n.ApplicationID = convId;
+                                        n.ApplicationID = newId;
                                         return n;
                                     });
 
@@ -101,30 +101,30 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                     var success = true;
 
-                    var sql = "UPDATE `Applications` SET `Name`=@Name WHERE `ID`=@ID;";
+                    var sql = "UPDATE Applications SET Name=@Name WHERE ID=@ID;";
 
                     success &= cn.Execute(sql, new { Name = application.Name, ID = application.ID }) > 0;
 
-                    sql = "DELETE FROM `ApplicationRoles` WHERE `ApplicationID`=@id;";
+                    sql = "DELETE FROM ApplicationRoles WHERE ApplicationID=@id;";
 
                     /*success &=*/ cn.Execute(sql, new { id = application.ID });// > 0;
 
                     if (!application.Roles.IsEmpty())
                     {
                         sql =
-                            "INSERT INTO `ApplicationRoles` (`ID`, `ApplicationID`, `Name`) Values (@ID, @ApplicationID, @Name);";
+                            "INSERT INTO ApplicationRoles (ID, ApplicationID, Name) Values (@ID, @ApplicationID, @Name);";
 
                         success &= cn.Execute(sql, application.Roles) > 0;
                     }
 
-                    sql = "DELETE FROM `ApplicationCourseYears` WHERE `ApplicationID`=@id;";
+                    sql = "DELETE FROM ApplicationCourseYears WHERE ApplicationID=@id;";
 
                     /*success &=*/ cn.Execute(sql, new { id = application.ID });// > 0;
 
                     if (!application.CourseAccess.IsEmpty())
                     {
 
-                        sql = "INSERT INTO `ApplicationCourseYears` (`ID`, `ApplicationID`, `CourseYearID`) Values (@ID, @ApplicationID, @CourseYearID);";
+                        sql = "INSERT INTO ApplicationCourseYears (ID, ApplicationID, CourseYearID) Values (@ID, @ApplicationID, @CourseYearID);";
 
                         success &= cn.Execute(sql, application.CourseAccess) > 0;
                     }
@@ -151,29 +151,29 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                     #region fetch old application obj with same ID
 
-                    var sql = "SELECT `ID`, `Name` FROM `Applications` WHERE `ID` = @id;";
+                    var sql = "SELECT ID, Name FROM Applications WHERE ID = @id;";
                     var oldApplication =
                         cn.Query<Application.Application>(sql, new {id = application.ID}).SingleOrDefault();
 
                     if (oldApplication != null)
                     {
                         sql =
-                            "SELECT `ID`, `ApplicationID`, `CourseYearID` FROM `ApplicationCourseYears` WHERE `ApplicationID` = @id;";
+                            "SELECT ID, ApplicationID, CourseYearID FROM ApplicationCourseYears WHERE ApplicationID = @id;";
                         oldApplication.CourseAccess = cn.Query<CourseYears>(sql, new {id = application.ID});
 
                         sql =
-                            "SELECT `ID`, `ApplicationID`, `Name` FROM `ApplicationRoles` WHERE `ApplicationID` = @id;";
+                            "SELECT ID, ApplicationID, Name FROM ApplicationRoles WHERE ApplicationID = @id;";
                         oldApplication.Roles = cn.Query<ApplicationRole>(sql, new {id = application.ID});
                     }
 
                     #endregion
 
-                    sql = "UPDATE `Applications` SET `Name`=@Name WHERE `ID`=@ID;";
+                    sql = "UPDATE Applications SET Name=@Name WHERE ID=@ID;";
                     success &= cn.Execute(sql, new {Name = application.Name, ID = application.ID}) > 0;
 
                     if (application.Roles.IsEmpty() && !oldApplication.Roles.IsEmpty())
                     {
-                        sql = "DELETE FROM `ApplicationRoles` WHERE `ApplicationID`=@ApplicationID;";
+                        sql = "DELETE FROM ApplicationRoles WHERE ApplicationID=@ApplicationID;";
                         success &= cn.Execute(sql, new {ApplicationID = application.ID}) > 0;
                     }
                     else
@@ -186,7 +186,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                                 return n;
                             }).ToList();
 
-                            sql = "INSERT INTO `ApplicationRoles` (ApplicationID, Name) Values (@ApplicationID, @Name);";
+                            sql = "INSERT INTO ApplicationRoles (ApplicationID, Name) Values (@ApplicationID, @Name);";
 
                             success = cn.Execute(sql, applicationRoles) > 0;
                         }
@@ -207,7 +207,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                             if (!toDelete.IsEmpty())
                             {
-                                sql = "DELETE FROM `ApplicationRoles` WHERE `id`=@id;";
+                                sql = "DELETE FROM ApplicationRoles WHERE id=@id;";
 
                                 success &= cn.Execute(sql, toDelete) > 0;
                             }
@@ -215,14 +215,14 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                             if (!toUpdate.IsEmpty())
                             {
                                 sql =
-                                    "UPDATE `ApplicationRoles` SET `Name` = @Name, `ApplicationID` = @ApplicationID WHERE `id`=@id;";
+                                    "UPDATE ApplicationRoles SET Name = @Name, ApplicationID = @ApplicationID WHERE id=@id;";
                                 success &= cn.Execute(sql, toUpdate) > 0;
                             }
 
                             if (!toCreate.IsEmpty())
                             {
                                 sql =
-                                    "INSERT INTO `ApplicationRoles` (`ID`, `ApplicationID`, `Name`) Values (@ID, @ApplicationID, @Name);";
+                                    "INSERT INTO ApplicationRoles (ApplicationID, Name) Values (@ApplicationID, @Name);";
                                 success &= cn.Execute(sql, toCreateFinal) > 0;
                                 //  _connection.Execute()
                             }
@@ -232,7 +232,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                     if (application.CourseAccess.IsEmpty() && !oldApplication.CourseAccess.IsEmpty())
                     {
-                        sql = "DELETE FROM `ApplicationCourseYears` WHERE `ApplicationID`=@ApplicationID;";
+                        sql = "DELETE FROM ApplicationCourseYears WHERE ApplicationID=@ApplicationID;";
                         success &= cn.Execute(sql, new { ApplicationID = application.ID }) > 0;
                     }
                     else
@@ -245,7 +245,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                                 return n;
                             }).ToList();
 
-                            sql = "INSERT INTO `ApplicationCourseYears` (ApplicationID, CourseYearID) Values (@ApplicationID, @CourseYearID);";
+                            sql = "INSERT INTO ApplicationCourseYears (ApplicationID, CourseYearID) Values (@ApplicationID, @CourseYearID);";
 
                             success = cn.Execute(sql, applicationCourseYears) > 0;
                         }
@@ -275,7 +275,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
 
                             if (!toDelete.IsEmpty())
                             {
-                                sql = "DELETE FROM `ApplicationCourseYears` WHERE `id`=@id;";
+                                sql = "DELETE FROM ApplicationCourseYears WHERE id=@id;";
 
                                 success &= cn.Execute(sql, toDelete) > 0;
                             }
@@ -283,14 +283,14 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                             if (!toUpdate.IsEmpty())
                             {
                                 sql =
-                                    "UPDATE `ApplicationCourseYears` SET `CourseYearID` = @CourseYearID, `ApplicationID` = @ApplicationID WHERE `id`=@id;";
+                                    "UPDATE ApplicationCourseYears SET CourseYearID = @CourseYearID, ApplicationID = @ApplicationID WHERE id=@id;";
                                 success &= cn.Execute(sql, toUpdate) > 0;
                             }
 
                             if (!toCreate.IsEmpty())
                             {
                                 sql =
-                                    "INSERT INTO `ApplicationCourseYears` (`ID`, `ApplicationID`, `CourseYearID`) Values (@ID, @ApplicationID, @CourseYearID);";
+                                    "INSERT INTO ApplicationCourseYears (ApplicationID, CourseYearID) Values (@ApplicationID, @CourseYearID);";
                                 success &= cn.Execute(sql, toCreateFinal) > 0;
                                 //  _connection.Execute()
                             }
@@ -317,19 +317,19 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                     cn.Open();
                     var success = true;
 
-                    var sql = "DELETE FROM `Applications` WHERE `Id`=@id;";
+                    var sql = "DELETE FROM Applications WHERE Id=@id;";
                     success &= cn.Execute(sql, new { id = application.ID }) > 0;
 
                     if (!application.CourseAccess.IsEmpty())
                     {
-                        sql = "DELETE FROM `ApplicationCourseYears` WHERE `ApplicationID`=@ApplicationID;";
+                        sql = "DELETE FROM ApplicationCourseYears WHERE ApplicationID=@ApplicationID;";
 
                         success &= cn.Execute(sql, new {ApplicationID = application.ID}) > 0;
                     }
 
                     if (!application.Roles.IsEmpty())
                     {
-                        sql = "DELETE FROM `ApplicationRoles` WHERE `ApplicationID`=@ApplicationID;";
+                        sql = "DELETE FROM ApplicationRoles WHERE ApplicationID=@ApplicationID;";
 
                         success &= cn.Execute(sql, new {ApplicationID = application.ID}) > 0;
                     }
@@ -349,15 +349,15 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         {
             using (var cn = Connection)
             {
-                var sql = "SELECT `ID`, `Name` FROM `Applications` WHERE `ID` = @id;";
+                var sql = "SELECT ID, Name FROM Applications WHERE ID = @id;";
                 var application = cn.Query<Application.Application>(sql, new {id = id}).SingleOrDefault();
 
                 if (application != null)
                 {
-                    sql = "SELECT `ID`, `ApplicationID`, `CourseYearID` FROM `ApplicationCourseYears` WHERE `ApplicationID` = @id;";
+                    sql = "SELECT ID, ApplicationID, CourseYearID FROM ApplicationCourseYears WHERE ApplicationID = @id;";
                     application.CourseAccess = cn.Query<CourseYears>(sql, new {id = id});
 
-                    sql = "SELECT `ID`, `ApplicationID`, `Name` FROM `ApplicationRoles` WHERE `ApplicationID` = @id;";
+                    sql = "SELECT ID, ApplicationID, Name FROM ApplicationRoles WHERE ApplicationID = @id;";
                     application.Roles = cn.Query<ApplicationRole>(sql, new { id = id });
                 }
 
@@ -369,15 +369,15 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         {
             using (var cn = Connection)
             {
-                var sql = "SELECT `ID`, `Name` FROM `Applications` WHERE `Name` = @name;";
+                var sql = "SELECT ID, Name FROM Applications WHERE Name = @name;";
                 var application = cn.Query<Application.Application>(sql, new { name = name }).SingleOrDefault();
 
                 if (application != null)
                 {
-                    sql = "SELECT `ID`, `ApplicationID`, `CourseYearID` FROM `ApplicationCourseYears` WHERE `ApplicationID` = @id;";
+                    sql = "SELECT ID, ApplicationID, CourseYearID FROM ApplicationCourseYears WHERE ApplicationID = @id;";
                     application.CourseAccess = cn.Query<CourseYears>(sql, new { id = application.ID });
 
-                    sql = "SELECT `ID`, `ApplicationID`, `Name` FROM `ApplicationRoles` WHERE `ApplicationID` = @id;";
+                    sql = "SELECT ID, ApplicationID, Name FROM ApplicationRoles WHERE ApplicationID = @id;";
                     application.Roles = cn.Query<ApplicationRole>(sql, new { id = application.ID });
                 }
 
@@ -389,12 +389,12 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         {
             using (var cn = Connection)
             {
-                var sql = "SELECT `ID`, `Name` FROM `Applications`;";
+                var sql = "SELECT ID, Name FROM Applications;";
                 var applications = cn.Query<Application.Application>(sql);
 
                 if (!applications.IsEmpty())
                 {
-                    sql = "SELECT `ID`, `ApplicationID`, `CourseYearID` FROM `ApplicationCourseYears`;";
+                    sql = "SELECT ID, ApplicationID, CourseYearID FROM ApplicationCourseYears;";
                     var courseYears = cn.Query<CourseYears>(sql);//todo: rename courseyears!
 
                     if (!courseYears.IsEmpty())
@@ -410,7 +410,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                         }
                     }
 
-                    sql = "SELECT `ID`, `ApplicationID`, `Name` FROM `ApplicationRoles`;";
+                    sql = "SELECT ID, ApplicationID, Name FROM ApplicationRoles;";
                     var appRoles = cn.Query<ApplicationRole>(sql);
 
                     if (!appRoles.IsEmpty())
@@ -435,12 +435,12 @@ namespace eMotive.CMS.Repositories.Objects.Repository
         {
             using (var cn = Connection)
             {
-                var sql = "SELECT `ID`, `Name` FROM `Applications` WHERE `ID` IN @ids;";
+                var sql = "SELECT ID, Name FROM Applications WHERE ID IN @ids;";
                 var applications = cn.Query<Application.Application>(sql, new {ids = ids});
 
                 if (!applications.IsEmpty())
                 {
-                    sql = "SELECT `ID`, `ApplicationID`, `CourseYearID` FROM `ApplicationCourseYears` WHERE `ApplicationID` IN @ids;";
+                    sql = "SELECT ID, ApplicationID, CourseYearID FROM ApplicationCourseYears WHERE ApplicationID IN @ids;";
                     var courseYears = cn.Query<CourseYears>(sql, new { ids = ids });//todo: rename courseyears!
 
                     if (!courseYears.IsEmpty())
@@ -456,7 +456,7 @@ namespace eMotive.CMS.Repositories.Objects.Repository
                         }
                     }
 
-                    sql = "SELECT `ID`, `ApplicationID`, `Name` FROM `ApplicationRoles`  WHERE `ApplicationID` IN @ids;";
+                    sql = "SELECT ID, ApplicationID, Name FROM ApplicationRoles  WHERE ApplicationID IN @ids;";
                     var appRoles = cn.Query<ApplicationRole>(sql, new { ids = ids });
 
                     if (!appRoles.IsEmpty())

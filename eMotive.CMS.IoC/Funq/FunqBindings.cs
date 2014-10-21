@@ -4,7 +4,8 @@ using eMotive.CMS.Managers.Interfaces;
 using eMotive.CMS.Managers.Objects;
 using eMotive.CMS.Managers.Objects.Managers;
 using eMotive.CMS.Repositories.Interfaces;
-using eMotive.CMS.Repositories.Objects.Repository;
+//using eMotive.CMS.Repositories.Objects.Repository;
+using eMotive.CMS.Repositories.Objects.Repository.MSSQL;
 using eMotive.CMS.Search.Interfaces;
 using eMotive.CMS.Search.Objects;
 using eMotive.CMS.Services.Interfaces;
@@ -19,15 +20,25 @@ namespace eMotive.CMS.IoC.Funq
         {
             var loggingConnectionString = ConfigurationManager.ConnectionStrings["Logging"].ConnectionString ?? string.Empty;
             var repositoryConnectionString = ConfigurationManager.ConnectionStrings["Repositories"].ConnectionString ?? string.Empty;
+            var repositoryMSSQLConnectionString = ConfigurationManager.ConnectionStrings["MSSQLRepositories"].ConnectionString ?? string.Empty;
             var luceneIndex = ConfigurationManager.AppSettings["LuceneIndex"] ?? string.Empty;
             container.Register(c => Mapper.Engine);
 
 
             #region repositories
+            //MySQL
+            /*
+            container.Register<IApplicationRepository>(c => new Repositories.Objects.Repository.ApplicationRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
             container.Register<IPageRepository>(c => new PageRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
             container.Register<IUserRepository>(c => new UserRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
-            container.Register<ICourseRepository>(c => new CourseRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
-            container.Register<IApplicationRepository>(c => new ApplicationRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request);
+            container.Register<ICourseRepository>(c => new CourseRepository(repositoryConnectionString)).ReusedWithin(ReuseScope.Request); 
+            */
+
+            //MSSQL
+            container.Register<IApplicationRepository>(c => new ApplicationRepository(repositoryMSSQLConnectionString)).ReusedWithin(ReuseScope.Request);
+            container.Register<IPageRepository>(c => new PageRepository(repositoryMSSQLConnectionString)).ReusedWithin(ReuseScope.Request);
+            container.Register<IUserRepository>(c => new UserRepository(repositoryMSSQLConnectionString)).ReusedWithin(ReuseScope.Request);
+            container.Register<ICourseRepository>(c => new CourseRepository(repositoryMSSQLConnectionString)).ReusedWithin(ReuseScope.Request);
             #endregion
 
 
@@ -36,6 +47,8 @@ namespace eMotive.CMS.IoC.Funq
             container.Register<IMessageBusService>(c => new MessageBusService()).ReusedWithin(ReuseScope.Request);
             container.Register<IDocumentManagerService>(c => new DocumentManagerService(c.Resolve<IServiceRepository>())).ReusedWithin(ReuseScope.Request);
 
+            //MySQL
+            /*
             container.Register<IEventManagerService>(c => new EventManagerService(repositoryConnectionString) { AuditService = c.Resolve<IAuditService>() }).ReusedWithin(ReuseScope.Request);
 
             container.Register<IEmailService>(c => new EmailService(repositoryConnectionString)
@@ -44,6 +57,19 @@ namespace eMotive.CMS.IoC.Funq
                 MessageBusService = c.Resolve<IMessageBusService>(),
                 SearchManager = null//c.Resolve<ISearchManager>(),
             }).ReusedWithin(ReuseScope.Request);
+            */
+
+            //MSSQL
+            container.Register<IEventManagerService>(c => new Services.Objects.Service.MSSQL.EventManagerService(repositoryMSSQLConnectionString) { AuditService = c.Resolve<IAuditService>() }).ReusedWithin(ReuseScope.Request);
+
+            container.Register<IEmailService>(c => new Services.Objects.Service.MSSQL.EmailService(repositoryMSSQLConnectionString)
+            {
+                AuditService = c.Resolve<IAuditService>(),
+                MessageBusService = c.Resolve<IMessageBusService>(),
+                SearchManager = null//c.Resolve<ISearchManager>(),
+            }).ReusedWithin(ReuseScope.Request);
+            
+
             #endregion
 
             #region managers

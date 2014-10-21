@@ -12,6 +12,7 @@ namespace eMotive.CMS.Managers.Objects.Managers
                 Title = "TestMenu",
                 MenuItems = new[]
                             {
+                                
                                 new MenuItem
                                     {
                                         ID = 1,
@@ -52,32 +53,48 @@ namespace eMotive.CMS.Managers.Objects.Managers
                                         Icon = "menu-icon fa fa-users",
                                         Title = "Manage Users"
                                     }
-                                /*
-                                new MenuItem
-                                    {
-                                        ID = 1,
-                                        Name = "Course Admin",
-                                        URL = "/portals/intrameddevtest/Test/Course",
-                                        Icon = "menu-icon fa fa-folder-o",
-                                        Title = "Manage Courses"
-                                    },
-                                    new MenuItem
-                                    {
-                                        ID = 1,
-                                        Name = "Application Admin",
-                                        URL = "/portals/intrameddevtest/Test/Application",
-                                        Icon = "menu-icon fa fa-cog",
-                                        Title = "Manage Applications"
-                                    },
-                                    new MenuItem
-                                    {
-                                        ID = 1,
-                                        Name = "Email Admin",
-                                        URL = "/portals/intrameddevtest/Test/Emails",
-                                        Icon = "menu-icon fa fa-bolt",
-                                        Title = "Manage Email Events"
-                                    }
-                                 */
+                                
+                                //new MenuItem
+                                //    {
+                                //        ID = 1,
+                                //        Name = "Manage Courses",
+                                //        URL = "/portals/intrameddevtest/Test/Course",
+                                //        Icon = "menu-icon fa fa-folder-o",
+                                //        Title = "Manage Courses"
+                                //    },
+                                //    new MenuItem
+                                //    {
+                                //        ID = 1,
+                                //        Name = "Manage Applications",
+                                //        URL = "/portals/intrameddevtest/Test/Application",
+                                //        Icon = "menu-icon fa fa-cog",
+                                //        Title = "Manage Applications"
+                                //    },
+                                //    new MenuItem
+                                //    {
+                                //        ID = 1,
+                                //        Name = "Manage Email Events",
+                                //        URL = "/portals/intrameddevtest/Test/Emails",
+                                //        Icon = "menu-icon fa fa-bolt",
+                                //        Title = "Manage Email Events"
+                                //    },
+                                //    new MenuItem
+                                //    {
+                                //        ID = 1,
+                                //        Name = "Manage Pages",
+                                //        URL = "/portals/intrameddevtest/Test/Pages",
+                                //        Icon = "menu-icon fa fa-book",
+                                //        Title = "Manage Pages"
+                                //    },
+                                //    new MenuItem
+                                //    {
+                                //        ID = 1,
+                                //        Name = "Manage Users",
+                                //        URL = "/portals/intrameddevtest/Test/Users",
+                                //        Icon = "menu-icon fa fa-users",
+                                //        Title = "Manage Users"
+                                //    }
+                                 
                             }
             };
 
